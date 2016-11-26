@@ -6,8 +6,7 @@ using UnityEngine.EventSystems;
 public class MouseController : MonoBehaviour {
 
     public GameObject hightLightCircle;
-
-
+    public GameObject movementCircle;
 
     [SerializeField]
     public HeroObject currentlySelectedHero;
@@ -23,10 +22,12 @@ public class MouseController : MonoBehaviour {
         //9 = Objects
         hitLayer = 1 << 8 | 1 <<  9;
         hightLightCircle.SetActive(false);
+        movementCircle.SetActive(false);
     }
 
     public void DoUpdate()
     {
+        //Click
         if (Input.GetMouseButtonDown(0)
             && !EventSystem.current.IsPointerOverGameObject()) //not clicking on UI
         {
@@ -38,8 +39,6 @@ public class MouseController : MonoBehaviour {
             {
                 switch (hit.transform.tag)
                 {
-                    case "Unit":
-                        break;
                     case "Hero":
                         currentlySelectedHero = hit.transform.GetComponent<HeroObject>();
                         //hero.SetMovePosition(hit.point);
@@ -47,25 +46,21 @@ public class MouseController : MonoBehaviour {
                         hightLightCircle.transform.parent = currentlySelectedHero.transform;
                         hightLightCircle.transform.localPosition = new Vector3(0f, 0.1f, 0f);
                         break;
+                    case "Enemy":
                     case "Ground":
                         break;
                     case "Untagged":
                         Debug.Log("<color=red>This object is not tagged  !!!!!  </color>");
                         break;
                     default:
-                        Debug.Log("<color=red>default case ??? ????</color>");
+                        Debug.Log("<color=red>defa  5ult case ??? ????</color>");
                         break;
                 }
-
-
-            }
-            else
-            {
-                Debug.Log("<color=red>Raycast does not hit anything. Might be a problem. </color>");
             }
         }
         else
         {
+            //Right click
             if (Input.GetMouseButtonDown(1)
                 && !EventSystem.current.IsPointerOverGameObject()) //not clicking on UI
             {
@@ -77,7 +72,12 @@ public class MouseController : MonoBehaviour {
                 {
                     switch (hit.transform.tag)
                     {
-                        case "Unit":
+                        case "Enemy":
+                            if (currentlySelectedHero != null)
+                            {
+                                BaseElementObject baseTarget = hit.transform.gameObject.GetComponent<BaseElementObject>();
+                                currentlySelectedHero.ChargeAtObject(baseTarget);
+                            }
                             break;
                         case "Hero":
                             break;
@@ -85,6 +85,7 @@ public class MouseController : MonoBehaviour {
                             if (currentlySelectedHero != null)
                             {
                                 currentlySelectedHero.SetMovePosition(hit.point);
+                                SetMovementMark(hit.point);
                             }
                             break;
                         case "Untagged":
@@ -97,6 +98,31 @@ public class MouseController : MonoBehaviour {
                 }
 
             }
+        }
+    }
+
+    private void SetMovementMark(Vector3 position)
+    {
+        movementCircle.SetActive(true);
+        movementCircle.transform.position = position;
+        StartCoroutine(MovementMarkEnum());
+    }
+
+    IEnumerator MovementMarkEnum()
+    {
+        float circleSize = 2f;
+        movementCircle.transform.localScale = new Vector3(circleSize, 0.1f, circleSize);
+        yield return null;
+        while (true)
+        {
+            circleSize -= Time.deltaTime * 4f;
+            movementCircle.transform.localScale = new Vector3(circleSize, 0.1f, circleSize);
+            if (circleSize <= 0.05f)
+            {
+                movementCircle.SetActive(false);
+                break;
+            }
+            yield return null;
         }
     }
 }

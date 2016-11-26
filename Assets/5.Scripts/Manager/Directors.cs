@@ -9,10 +9,6 @@ public class Directors : MonoBehaviour {
     public static PlayerManager playerManager;
     public static EnemyManager enemyManager;
 
-    //Later if I want to change to use fixed deltaTime or anything, I can just change it from here.
-    private static float deltaTime;
-    public static float GetDeltaTime() { return deltaTime; }
-
     void Awake()
     {
         PrepareManagers();
@@ -21,7 +17,6 @@ public class Directors : MonoBehaviour {
 
     void Update()
     {
-        deltaTime = Time.deltaTime;
         UpdateManagers();
     }
 

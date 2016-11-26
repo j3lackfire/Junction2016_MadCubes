@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class CargoKart : MonoBehaviour {
-
+public class CargoKart : BaseElementObject {
     public List<GameObject> targetPosList = new List<GameObject>();
     [SerializeField]
-    GameObject currentTargetNode;
+    private GameObject currentTargetNode;
 
     private int currentTargetNodeIndex;
 
@@ -14,14 +13,14 @@ public class CargoKart : MonoBehaviour {
     [SerializeField]
     private float cargoSpeed;
 
-    public void Init()
+    public override void Init(ObjectManager _objectManager, bool _isEnemy)
     {
         currentTargetNodeIndex = 0;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
         isGameWin = false;
     }	
 
-    public void DoUpdate () {
+    public override void DoUpdate () {
         if (!isGameWin)
         {
             MoveToTargetPosition();
@@ -76,5 +75,10 @@ public class CargoKart : MonoBehaviour {
         currentTargetNodeIndex++;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
         transform.LookAt(currentTargetNode.transform.position);
+    }
+
+    public override GameElement GetObjectElement()
+    {
+        return GameElement.Cargo;
     }
 }

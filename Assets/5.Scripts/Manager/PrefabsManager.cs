@@ -6,12 +6,12 @@ public class PrefabsManager {
     private static string unitDataPath = "Prefabs/Units/";
     private static string materialDataPath = "Materials/";
 
-    public static BaseElementObject SpawnUnit(GameElement element, bool isHero = false)
+    public static BaseElementObject SpawnUnit(GameElement element, bool isEnemy = false)
     {
         BaseElementObject _unit;
-        if (!isHero)
+        if (isEnemy)
         {
-            _unit = (Resources.Load(unitDataPath + element.ToString()) as GameObject).GetComponent<BaseElementObject>();
+            _unit = (Resources.Load(unitDataPath + element.ToString() + "_Creep") as GameObject).GetComponent<BaseElementObject>();
         }
         else
         {
