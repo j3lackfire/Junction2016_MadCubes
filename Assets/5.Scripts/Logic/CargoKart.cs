@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public class CargoKart : MonoBehaviour {
 
-    private CameraController cameraController;
-
     public List<GameObject> targetPosList = new List<GameObject>();
     [SerializeField]
     GameObject currentTargetNode;
@@ -16,15 +14,14 @@ public class CargoKart : MonoBehaviour {
     [SerializeField]
     private float cargoSpeed;
 
-    void Awake()
+    public void Init()
     {
         currentTargetNodeIndex = 0;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
         isGameWin = false;
-        cameraController = FindObjectOfType<CameraController>();
     }	
 
-    void Update () {
+    public void DoUpdate () {
         if (!isGameWin)
         {
             MoveToTargetPosition();
@@ -48,7 +45,7 @@ public class CargoKart : MonoBehaviour {
         else
         {
             transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * cargoSpeed);
-            cameraController.FollowCargoKart();
+            //cameraController.FollowCargoKart();
         }
     }
 
