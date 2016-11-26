@@ -46,7 +46,7 @@ public class PlayerManager : ObjectManager {
                 distance = (Directors.enemyManager.objectList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
-        if (distance >= 10f)
+        if (distance >= baseObject.objectData.objectAttackRange + 2f)
         {
             return null;
         } else

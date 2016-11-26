@@ -8,6 +8,13 @@ public class WaterHero : HeroObject {
         base.ObjectAttack();
     }
 
+    protected override void DealDamageToTarget()
+    {
+        if (targetObject != null)
+        {
+            projectileManager.CreateProjectile(ProjectileType.Water_Hero, false, objectData.objectDamange, transform.position , targetObject, GetObjectElement());
+        }
+    }
 
     public override GameElement GetObjectElement()
     {

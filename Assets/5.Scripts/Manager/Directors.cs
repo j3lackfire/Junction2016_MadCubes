@@ -9,6 +9,8 @@ public class Directors : MonoBehaviour {
     public static PlayerManager playerManager;
     public static EnemyManager enemyManager;
 
+    public static ProjectileManager projectileManager;
+
     void Awake()
     {
         PrepareManagers();
@@ -49,6 +51,14 @@ public class Directors : MonoBehaviour {
             Destroy(mouseController.gameObject);
         }
         mouseController = tempMouseController;
+
+        ProjectileManager tempProjectileManager = FindObjectOfType<ProjectileManager>();
+        if (projectileManager != null)
+        {
+            Destroy(projectileManager.gameObject);
+        }
+        projectileManager = tempProjectileManager;
+
     }
 
     private void InitManagers()
@@ -57,6 +67,7 @@ public class Directors : MonoBehaviour {
         enemyManager.Init();
         cameraController.Init();
         mouseController.Init();
+        projectileManager.Init();
     }
 
     private void UpdateManagers()
@@ -65,6 +76,7 @@ public class Directors : MonoBehaviour {
         cameraController.DoUpdate();
         playerManager.DoUpdate();
         enemyManager.DoUpdate();
+        projectileManager.DoUpdate();
     }
 
 }

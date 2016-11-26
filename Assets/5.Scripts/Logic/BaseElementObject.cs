@@ -13,6 +13,7 @@ public class BaseElementObject : MonoBehaviour {
     private Animator childAnimator;
     [SerializeField]
     protected ObjectManager objectManager;
+    protected ProjectileManager projectileManager;
 
     public bool isEnemy;
     
@@ -22,13 +23,14 @@ public class BaseElementObject : MonoBehaviour {
 
     private Vector3 targetPosition;
     [SerializeField]
-    BaseElementObject targetObject;
+    protected BaseElementObject targetObject;
 
     public virtual void Init(ObjectManager _objectManager, bool _isEnemy)
     {
         isEnemy = _isEnemy;
         objectManager = _objectManager;
         objectData.objectHealth = objectData.objectMaxHealth;
+        projectileManager = Directors.projectileManager;
         //components
         if (navMeshAgent == null)
         {
@@ -183,18 +185,16 @@ public class BaseElementObject : MonoBehaviour {
 
     protected virtual void DealDamageToTarget()
     {
-        Debug.Log(gameObject.name + " - deal damage to " + targetObject + " - damage " + objectData.objectDamange);
         if (targetObject != null)
         {
             targetObject.ReceiveDamage(objectData.objectDamange, GetObjectElement());
-
         }
     }
 
     protected void FinnishAttackTarget()
     {
         isDamageDeal = false;
-        if (targetObject != null && IsTargetInRange())
+        if (targetObject != null && IsTargetInRange() && !isEnemy)
         {
             StartAttackTarget();
         } else

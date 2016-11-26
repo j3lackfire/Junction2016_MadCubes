@@ -5,6 +5,7 @@ public class PrefabsManager {
 
     private static string unitDataPath = "Prefabs/Units/";
     private static string materialDataPath = "Materials/";
+    private static string projectileDataPath = "Prefabs/Projectile/";
 
     public static BaseElementObject SpawnUnit(GameElement element, bool isEnemy = false)
     {
@@ -20,6 +21,12 @@ public class PrefabsManager {
         BaseElementObject unit = GameObject.Instantiate(_unit);
 
         return unit;
+    }
+
+    public static BasicProjectile SpawnProjectile(ProjectileType type)
+    {
+        BasicProjectile projectile = (Resources.Load(projectileDataPath + type.ToString()) as GameObject).GetComponent<BasicProjectile>();
+        return projectile;
     }
 
     public static Material GetMaterialColor(GameElement gameElement)
