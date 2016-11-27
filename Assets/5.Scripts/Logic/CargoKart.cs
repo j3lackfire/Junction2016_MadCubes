@@ -53,6 +53,7 @@ public class CargoKart : BaseElementObject {
 
     public override void ReduceHealth(int damage)
     {
+        //Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
         objectData.objectHealth -= damage;
         if (objectData.objectHealth <= 0)
         {

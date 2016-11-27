@@ -20,6 +20,7 @@ public class HeroObject : BaseElementObject {
             Directors.mouseController.hightLightCircle.transform.gameObject.SetActive(false);
         }
         objectState = ObjectState.Die;
+        Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         childAnimator.gameObject.SetActive(false);
         deadCountDown = objectData.objectRespawnTime;
     }
@@ -57,6 +58,10 @@ public class HeroObject : BaseElementObject {
 
     public override void ReduceHealth(int damage)
     {
+        if(objectState == ObjectState.Die)
+        {
+            return;
+        }
         objectData.objectHealth -= damage;
         if (objectData.objectHealth <= 0)
         {
@@ -66,7 +71,7 @@ public class HeroObject : BaseElementObject {
                 var corpse = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 corpse.transform.position = gameObject.transform.position + (new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
                 corpse.transform.localScale = new Vector3(0.3333f, 0.3333f, 0.3333f);
-                corpse.GetComponent<Renderer>().material = PrefabsManager.GetMaterialColor(GetObjectElement(), !isEnemy);
+                corpse.GetComponent<Renderer>().material = PrefabsManager.GetMaterialColor(GetObjectElement(), false);
                 corpse.AddComponent<Rigidbody>();
                 Destroy(corpse, Random.Range(2.5f, 3.5f));
             }

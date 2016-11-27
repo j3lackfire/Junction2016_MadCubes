@@ -6,14 +6,13 @@ public class CameraController : MonoBehaviour {
     private Vector3 defaultCameraRotation;
     private Vector3 currentCameraRotation;
 
-    protected void Awake()
-    {        
-    }
+    Animator camAnimator;
 
     public void Init()
     {
         defaultCameraRotation = transform.localEulerAngles;
         currentCameraRotation = defaultCameraRotation;
+        camAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
     public void DoUpdate()
@@ -26,6 +25,10 @@ public class CameraController : MonoBehaviour {
         switch (magnitude)
         {
             case ScreenShakeMagnitude.Small:
+                camAnimator.SetTrigger("SmallShake");
+                break;
+            case ScreenShakeMagnitude.Big:
+                camAnimator.SetTrigger("BigShake");
                 break;
         }
     }

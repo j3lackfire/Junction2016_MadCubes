@@ -293,6 +293,10 @@ public class BaseElementObject : MonoBehaviour {
                     objectManager = Directors.playerManager;
                 }
             }
+            if (isEnemy && objectData.objectAttackRange == 9f)
+            {
+                Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
+            }
             objectManager.RemoveObject(this);
             Destroy(gameObject);
         }

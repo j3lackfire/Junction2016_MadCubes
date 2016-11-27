@@ -17,7 +17,7 @@ public class WaterHero : HeroObject {
         {
             projectileManager.CreateProjectile(ProjectileType.Water_Hero, false, objectData.objectDamange, transform.position , targetObject, GetObjectElement());
             testRay = new Ray(transform.position, targetObject.transform.position - transform.position);
-            RaycastHit[] hitObject = Physics.RaycastAll(testRay, 50f);
+            RaycastHit[] hitObject = Physics.RaycastAll(testRay, 50f);            
             for (int i = 0; i < hitObject.Length; i ++)
             {
                 BaseElementObject hit = hitObject[i].transform.GetComponent<BaseElementObject>();
@@ -28,6 +28,10 @@ public class WaterHero : HeroObject {
                         hit.ReceiveDamage(objectData.objectDamange, GetObjectElement());
                     }
                 }
+            }
+            if (hitObject.Length >= 4)
+            {
+                Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
             }
         }
     }
