@@ -14,7 +14,7 @@ public class CargoKart : BaseElementObject {
     [SerializeField]
     private float cargoSpeed;
 
-    public override void Init(ObjectManager _objectManager, bool _isEnemy)
+    public override void Init(ObjectManager _objectManager, bool _isEnemy, int level)
     {
         currentTargetNodeIndex = 0;
         currentTargetNode = targetPosList[currentTargetNodeIndex];

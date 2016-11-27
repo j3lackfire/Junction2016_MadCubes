@@ -5,6 +5,8 @@ public class PlayerManager : ObjectManager {
 
     public List<HeroObject> heroList = new List<HeroObject>();
     public static CargoKart cargoKart;
+    public static FireHero fireHero;
+    public static WaterHero waterHero;
 
     public override void Init()
     {
@@ -13,12 +15,15 @@ public class PlayerManager : ObjectManager {
         {
             cargoKart = FindObjectOfType<CargoKart>();
         }
-        cargoKart.Init(this, false);
+        fireHero = FindObjectOfType<FireHero>();
+        waterHero = FindObjectOfType<WaterHero>();
+
+        cargoKart.Init(this, false, 1);
 
         heroList.AddRange(FindObjectsOfType<HeroObject>());
         for (int i = 0; i < heroList.Count; i++)
         {
-            heroList[i].Init(this, false);
+            heroList[i].Init(this, false, 1);
         }
 
     }

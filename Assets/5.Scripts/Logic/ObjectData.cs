@@ -13,4 +13,8 @@ public class ObjectData {
 
     public float attackDuration;
     public float dealDamageTime;
+
+    public int objectLevel;
+
+    public float objectRespawnTime;
 }

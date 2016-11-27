@@ -29,6 +29,7 @@ public class MouseController : MonoBehaviour {
 
     public void DoUpdate()
     {
+        
         //Click
         if (Input.GetMouseButtonDown(0)
             && !EventSystem.current.IsPointerOverGameObject()) //not clicking on UI
@@ -101,6 +102,27 @@ public class MouseController : MonoBehaviour {
                 }
 
             }
+        }
+        CheckKeyboardInput();
+    }
+
+    private void CheckKeyboardInput()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            currentlySelectedHero = PlayerManager.fireHero;
+            //hero.SetMovePosition(hit.point);
+            hightLightCircle.SetActive(true);
+            hightLightCircle.transform.parent = currentlySelectedHero.transform;
+            hightLightCircle.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+        }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            currentlySelectedHero = PlayerManager.waterHero;
+            //hero.SetMovePosition(hit.point);
+            hightLightCircle.SetActive(true);
+            hightLightCircle.transform.parent = currentlySelectedHero.transform;
+            hightLightCircle.transform.localPosition = new Vector3(0f, 0.1f, 0f);
         }
     }
 

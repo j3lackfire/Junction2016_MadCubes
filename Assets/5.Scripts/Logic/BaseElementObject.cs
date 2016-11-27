@@ -4,13 +4,13 @@ using System.Collections;
 public class BaseElementObject : MonoBehaviour {
 
     //Components
-    private NavMeshAgent navMeshAgent;
+    protected NavMeshAgent navMeshAgent;
     protected BaseObjectRenderer objectRenderer;
     [SerializeField]
     public ObjectData objectData = new ObjectData();
     [SerializeField]
     protected AnimatorWrapper animatorWrapper;
-    private Animator childAnimator;
+    protected Animator childAnimator;
     [SerializeField]
     protected ObjectManager objectManager;
     protected ProjectileManager projectileManager;
@@ -25,11 +25,10 @@ public class BaseElementObject : MonoBehaviour {
     [SerializeField]
     protected BaseElementObject targetObject;
 
-    public virtual void Init(ObjectManager _objectManager, bool _isEnemy)
+    public virtual void Init(ObjectManager _objectManager, bool _isEnemy, int objectLevel)
     {
         isEnemy = _isEnemy;
         objectManager = _objectManager;
-        objectData.objectHealth = objectData.objectMaxHealth;
         projectileManager = Directors.projectileManager;
         //components
         if (navMeshAgent == null)
@@ -41,8 +40,17 @@ public class BaseElementObject : MonoBehaviour {
         childAnimator = GetComponentInChildren<Animator>();
         animatorWrapper = new AnimatorWrapper(childAnimator);
 
+        UpdateStatsByLevel(objectLevel);
         objectState = ObjectState.Idle;
         isDamageDeal = false;
+    }
+
+    public virtual void UpdateStatsByLevel (int level)
+    {
+        objectData.objectLevel = level;
+        objectData.objectMaxHealth = objectData.objectMaxHealth + (int)(objectData.objectMaxHealth * level * 0.15f);
+        objectData.objectDamange = objectData.objectDamange + (int)(objectData.objectDamange * level * 0.15f);
+        objectData.objectHealth = objectData.objectMaxHealth;
     }
 
     int idleCountDown= 10;
