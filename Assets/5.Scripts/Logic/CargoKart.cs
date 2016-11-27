@@ -58,6 +58,7 @@ public class CargoKart : BaseElementObject {
         if (objectData.objectHealth <= 0)
         {
             //Destroy(gameObject);
+            Directors.uiMaster.GameOver();
             isDead = true;
         }
     }

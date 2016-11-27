@@ -78,7 +78,6 @@ public class Directors : MonoBehaviour {
         cameraController.Init();
         mouseController.Init();
         projectileManager.Init();
-        uiMaster.Init();
     }
 
     private void UpdateManagers()
@@ -88,7 +87,6 @@ public class Directors : MonoBehaviour {
         playerManager.DoUpdate();
         enemyManager.DoUpdate();
         projectileManager.DoUpdate();
-        uiMaster.DoUpdate();
     }
 
 }

@@ -48,8 +48,8 @@ public class BaseElementObject : MonoBehaviour {
     public virtual void UpdateStatsByLevel (int level)
     {
         objectData.objectLevel = level;
-        objectData.objectMaxHealth = objectData.objectMaxHealth + (int)(objectData.objectMaxHealth * level * 0.15f);
-        objectData.objectDamange = objectData.objectDamange + (int)(objectData.objectDamange * level * 0.15f);
+        objectData.objectMaxHealth = objectData.objectMaxHealth + (int)(objectData.objectMaxHealth * level * 0.35f);
+        objectData.objectDamange = objectData.objectDamange + (int)(objectData.objectDamange * level * 0.35f);
         objectData.objectHealth = objectData.objectMaxHealth;
     }
 

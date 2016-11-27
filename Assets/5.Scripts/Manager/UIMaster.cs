@@ -4,20 +4,15 @@ using System.Collections;
 
 public class UIMaster : MonoBehaviour {
 
-    public GameObject cargoHealthPart;
-    public Text cargoHealthText;
-    public GameObject cargoHealthBar;
+    public GameObject gameOverPanel;
 
-    public GameObject redHero;
-    public Text redHeroText;
-    public GameObject redHeroBar;
+    public void RestartGame()
+    {
+        Application.LoadLevel(0);
+    }
 
-    public GameObject blueHeroPart;
-    public Text blueHeroText;
-    public GameObject blueHeroBar;
-
-    public void Init() { }
-
-    public void DoUpdate() { }
-
+    public void GameOver()
+    {
+        gameOverPanel.gameObject.SetActive(true);
+    }
 }
