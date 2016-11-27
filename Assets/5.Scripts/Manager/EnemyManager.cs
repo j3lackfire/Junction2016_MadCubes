@@ -19,7 +19,7 @@ public class EnemyManager : ObjectManager {
     {
         base.Init();
         levelCountDown = increaseLevelRate;
-        summonRate = 0.5f;
+        summonRate = 0.35f;
     }
 
     float countDown = 1;
@@ -35,7 +35,7 @@ public class EnemyManager : ObjectManager {
         if (countDown <= 0)
         {
             SpawnEnemy(GameElement.Fire);
-            if(Random.Range(0,4) < 1)
+            if(Random.Range(0,7) < 1)
             {
                 SpawnEnemy(GameElement.Water);
             }
@@ -50,7 +50,7 @@ public class EnemyManager : ObjectManager {
         if (levelCountDown <= 0)
         {
             levelCountDown += increaseLevelRate;
-            if (summonRate >= 0.12f)
+            if (summonRate >= 0.07f)
             {
                 summonRate -= 0.02f;
             }
