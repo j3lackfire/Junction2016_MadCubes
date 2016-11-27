@@ -3,20 +3,14 @@ using System.Collections;
 
 public class HeroObject : BaseElementObject {
     
-    public virtual void ActiveSkill()
-    {
-
-    }
+    public virtual void ActiveSkill() { }
 
     public virtual void OnHeroDie()
     {
         objectState = ObjectState.Die;
     }
 
-    public virtual void OnHeroRessurect()
-    {
-
-    }
+    public virtual void OnHeroRessurect() { }
 
     public override void ReduceHealth(int damage)
     {
