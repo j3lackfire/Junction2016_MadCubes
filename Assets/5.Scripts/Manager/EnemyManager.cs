@@ -6,6 +6,8 @@ public class EnemyManager : ObjectManager {
 
     public List<GameObject> enemySpawnPos = new List<GameObject>();
 
+    public GameObject spawnPointParent;
+
     public override void Init()
     {
         base.Init();
@@ -24,7 +26,11 @@ public class EnemyManager : ObjectManager {
         if (countDown <= 0)
         {
             SpawnEnemy(GameElement.Fire);
-            countDown += Random.Range(1f, 2f);
+            if(Random.Range(0,4) < 1)
+            {
+                SpawnEnemy(GameElement.Water);
+            }
+            countDown += Random.Range(0.35f, 0.65f);
         }
     }
 
@@ -62,7 +68,7 @@ public class EnemyManager : ObjectManager {
             return PlayerManager.cargoKart;
         } else
         {
-            if (distance < 10f)
+            if (distance < 20f)
             {
                 return returnObject;
             } else

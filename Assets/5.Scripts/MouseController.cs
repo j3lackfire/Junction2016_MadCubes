@@ -7,6 +7,7 @@ public class MouseController : MonoBehaviour {
 
     public GameObject hightLightCircle;
     public GameObject movementCircle;
+    public GameObject attackedCircle;
 
     [SerializeField]
     public HeroObject currentlySelectedHero;
@@ -23,6 +24,7 @@ public class MouseController : MonoBehaviour {
         hitLayer = 1 << 8 | 1 <<  9;
         hightLightCircle.SetActive(false);
         movementCircle.SetActive(false);
+        attackedCircle.SetActive(false);
     }
 
     public void DoUpdate()
@@ -77,6 +79,7 @@ public class MouseController : MonoBehaviour {
                             {
                                 BaseElementObject baseTarget = hit.transform.gameObject.GetComponent<BaseElementObject>();
                                 currentlySelectedHero.ChargeAtObject(baseTarget);
+                                SetAttackMark(baseTarget.gameObject);
                             }
                             break;
                         case "Hero":
@@ -115,13 +118,40 @@ public class MouseController : MonoBehaviour {
         yield return null;
         while (true)
         {
-            circleSize -= Time.deltaTime * 4f;
+            circleSize -= Time.deltaTime * 6f;
             movementCircle.transform.localScale = new Vector3(circleSize, 0.1f, circleSize);
-            if (circleSize <= 0.05f)
+            if (circleSize <= 0.1f)
             {
                 movementCircle.SetActive(false);
                 break;
             }
+            yield return null;
+        }
+    }
+
+    private void SetAttackMark(GameObject target)
+    {
+        attackedCircle.SetActive(true);
+        attackedCircle.transform.position = target.transform.position - new Vector3(0f,-0.05f,0f);
+
+        StartCoroutine(AttackMarkEnum(target));
+    }
+
+    IEnumerator AttackMarkEnum(GameObject target)
+    {
+        float circleSize = 3f;
+        attackedCircle.transform.localScale = new Vector3(circleSize, 0.1f, circleSize);
+        yield return null;
+        while (true)
+        {
+            if (target == null || circleSize <= 0.1f)
+            {
+                attackedCircle.SetActive(false);
+                break;
+            }
+            circleSize -= Time.deltaTime * 6f;
+            attackedCircle.transform.position = target.transform.position - new Vector3(0f, -0.05f, 0f);
+            attackedCircle.transform.localScale = new Vector3(circleSize, 0.1f, circleSize);
             yield return null;
         }
     }

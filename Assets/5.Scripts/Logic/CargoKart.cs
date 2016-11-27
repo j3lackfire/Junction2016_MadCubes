@@ -4,11 +4,12 @@ using System.Collections.Generic;
 public class CargoKart : BaseElementObject {
     public List<GameObject> targetPosList = new List<GameObject>();
     [SerializeField]
-    private GameObject currentTargetNode;
+    public GameObject currentTargetNode;
 
     private int currentTargetNodeIndex;
 
     public bool isGameWin;
+    public bool isDead;
 
     [SerializeField]
     private float cargoSpeed;
@@ -18,10 +19,11 @@ public class CargoKart : BaseElementObject {
         currentTargetNodeIndex = 0;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
         isGameWin = false;
+        isDead = false;
     }	
 
     public override void DoUpdate () {
-        if (!isGameWin)
+        if (!isGameWin && !isDead)
         {
             MoveToTargetPosition();
         }
@@ -43,8 +45,19 @@ public class CargoKart : BaseElementObject {
         }
         else
         {
+            Vector3 oldPos = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * cargoSpeed);
-            //cameraController.FollowCargoKart();
+            Directors.cameraController.FollowCargo(transform.position - oldPos);
+        }
+    }
+
+    public override void ReduceHealth(int damage)
+    {
+        objectData.objectHealth -= damage;
+        if (objectData.objectHealth <= 0)
+        {
+            //Destroy(gameObject);
+            isDead = true;
         }
     }
 
@@ -74,6 +87,7 @@ public class CargoKart : BaseElementObject {
     {
         currentTargetNodeIndex++;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
+        Directors.enemyManager.spawnPointParent.transform.position = currentTargetNode.transform.position;
         transform.LookAt(currentTargetNode.transform.position);
     }
 

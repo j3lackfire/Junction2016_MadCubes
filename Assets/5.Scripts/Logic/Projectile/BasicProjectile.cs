@@ -12,7 +12,9 @@ public class BasicProjectile : MonoBehaviour {
     public BaseElementObject targetObject;
     public GameElement bulletElement;
 
-    public void Init(bool _isEnemy, int _damage, Vector3 _startPos, Vector3 _targetPos, BaseElementObject _targetObject, GameElement _bulletElement)
+    public bool isChaseBullet = true;
+
+    public virtual void Init(bool _isEnemy, int _damage, Vector3 _startPos, Vector3 _targetPos, BaseElementObject _targetObject, GameElement _bulletElement)
     {
         isEnemyTeam = _isEnemy;
         damage = _damage;
@@ -24,16 +26,16 @@ public class BasicProjectile : MonoBehaviour {
         transform.LookAt(targetPosition);
     }
 
-    public void DoUpdate()
+    public virtual void DoUpdate()
     {
         CheckReachTarget();
     }
 
-    void CheckReachTarget()
+    protected virtual void CheckReachTarget()
     {
         if ((transform.position -targetPosition).magnitude >= 0.5f)
         {
-            if (targetObject != null)
+            if (targetObject != null && isChaseBullet)
             {
                 targetPosition = targetObject.transform.position;
             }
@@ -48,11 +50,11 @@ public class BasicProjectile : MonoBehaviour {
             Destroy(gameObject);
         }
     }
-    
 }
 
 public enum ProjectileType
 {
+    Fire_Creep,
     Water_Hero,
     Fire_Hero
 }

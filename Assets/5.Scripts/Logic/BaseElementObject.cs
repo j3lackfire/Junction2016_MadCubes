@@ -18,8 +18,8 @@ public class BaseElementObject : MonoBehaviour {
     public bool isEnemy;
     
     public ObjectState objectState;
-    private bool isDamageDeal;
-    private float attackCountDown;
+    protected bool isDamageDeal;
+    protected float attackCountDown;
 
     private Vector3 targetPosition;
     [SerializeField]
@@ -74,10 +74,17 @@ public class BaseElementObject : MonoBehaviour {
                 break;
             case ObjectState.Stun:
                 break;
+            case ObjectState.Die:
+                //when hero die, should countdown or do something
+                WhileHeroDie();
+                break;
         }
 
         animatorWrapper.DoUpdate();
     }
+
+    //call every frame when a hero is die
+    public virtual void WhileHeroDie() { }
 
     private void ObjectRunning()
     {
@@ -93,6 +100,13 @@ public class BaseElementObject : MonoBehaviour {
 
     private void ObjectCharging()
     {
+        if (targetObject == null)
+        {
+            animatorWrapper.AddTriggerToQueue("EnterIdleAnimation");
+            objectState = ObjectState.Idle;
+            return;
+        }
+        
         if (IsTargetInRange())
         {
             StartAttackTarget();
@@ -102,9 +116,16 @@ public class BaseElementObject : MonoBehaviour {
             countdown--;
             if (countdown <= 0)
             {
-                countdown = 5;
-                targetPosition = targetObject.transform.position;
-                navMeshAgent.SetDestination(targetPosition);
+                if (isEnemy && targetObject == PlayerManager.cargoKart &&
+                    objectManager.RequestTarget(this) != PlayerManager.cargoKart)
+                {
+                    ChargeAtObject(objectManager.RequestTarget(this));
+                } else
+                {
+                    countdown = 5;
+                    targetPosition = targetObject.transform.position;
+                    navMeshAgent.SetDestination(targetPosition);
+                }
             }
         }
     }
@@ -175,7 +196,9 @@ public class BaseElementObject : MonoBehaviour {
     protected virtual void StartAttackTarget()
     {
         objectState = ObjectState.Attack;
-        transform.LookAt(targetObject.transform.position);
+        if (targetObject != null) {
+            transform.LookAt(targetObject.transform.position);
+        }
         animatorWrapper.AddTriggerToQueue("EnterAttackAnimation");
         navMeshAgent.Stop();
         isDamageDeal = false;
@@ -187,7 +210,7 @@ public class BaseElementObject : MonoBehaviour {
     {
         if (targetObject != null)
         {
-            targetObject.ReceiveDamage(objectData.objectDamange, GetObjectElement());
+            projectileManager.CreateProjectile(ProjectileType.Fire_Creep, isEnemy, objectData.objectDamange, transform.position, targetObject, GetObjectElement());
         }
     }
 
@@ -213,34 +236,55 @@ public class BaseElementObject : MonoBehaviour {
     public void ReceiveDamage (int damage, GameElement attackedElement)
     {
         float damageMultiplier = 1f;
-        switch (GetObjectElement())
-        {
-            case GameElement.Invalid:
-            default:
-                Debug.Log("<color=red>Invalid element, please check again.!!!! </color>");
-                break;
-            case GameElement.Fire:
-                break;
-            case GameElement.Water:
-                break;
-            case GameElement.Rock:
-                break;
-            case GameElement.Tree:
-                break;
-            case GameElement.Electricity:
-                break;
-            case GameElement.Cargo:
-                break;
-        }
+        //switch (GetObjectElement())
+        //{
+        //    case GameElement.Invalid:
+        //    default:
+        //        Debug.Log("<color=red>Invalid element, please check again.!!!! </color>");
+        //        break;
+        //    case GameElement.Fire:
+        //        break;
+        //    case GameElement.Water:
+        //        break;
+        //    case GameElement.Rock:
+        //        break;
+        //    case GameElement.Tree:
+        //        break;
+        //    case GameElement.Electricity:
+        //        break;
+        //    case GameElement.Cargo:
+        //        break;
+        //}
         ReduceHealth((int)(damageMultiplier * damage));
     }
 
-    public void ReduceHealth(int damage)
+    public virtual void ReduceHealth(int damage)
     {
         objectData.objectHealth -= damage;
         if (objectData.objectHealth <= 0)
         {
             //dead effect.
+            for (int i = 0; i < 15; i++)
+            {
+                GameObject corpse = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                corpse.transform.position = gameObject.transform.position + (new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
+                corpse.transform.localScale = new Vector3(0.3333f, 0.3333f, 0.3333f);
+                corpse.GetComponent<Renderer>().material = PrefabsManager.GetMaterialColor(GetObjectElement(), !isEnemy);
+                corpse.AddComponent<Rigidbody>();
+                Destroy(corpse, Random.Range(2.5f,3.5f));
+            }
+
+            //end dead effect
+            if (objectManager == null)
+            {
+                if (isEnemy)
+                {
+                    objectManager = Directors.enemyManager;
+                } else
+                {
+                    objectManager = Directors.playerManager;
+                }
+            }
             objectManager.RemoveObject(this);
             Destroy(gameObject);
         }
@@ -255,7 +299,8 @@ public enum ObjectState
     Run,
     Charge,
     Attack,
-    Stun
+    Stun,
+    Die
 }
 
 public enum GameElement

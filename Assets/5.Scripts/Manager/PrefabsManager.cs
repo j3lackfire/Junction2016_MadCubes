@@ -4,7 +4,7 @@ using System.Collections;
 public class PrefabsManager {
 
     private static string unitDataPath = "Prefabs/Units/";
-    private static string materialDataPath = "Materials/";
+    private static string materialDataPath = "Materials/Units/";
     private static string projectileDataPath = "Prefabs/Projectile/";
 
     public static BaseElementObject SpawnUnit(GameElement element, bool isEnemy = false)
@@ -29,9 +29,17 @@ public class PrefabsManager {
         return projectile;
     }
 
-    public static Material GetMaterialColor(GameElement gameElement)
+    public static Material GetMaterialColor(GameElement gameElement, bool isHero = false)
     {
-        Material _mat = (Resources.Load(materialDataPath + gameElement.ToString())) as Material;
+        Material _mat;
+        if (!isHero)
+        {
+            _mat = (Resources.Load(materialDataPath + gameElement.ToString() + "_Creep")) as Material;
+        }
+        else
+        {
+            _mat = (Resources.Load(materialDataPath + gameElement.ToString() + "_Hero")) as Material;
+        }
         return _mat;
     }
 }

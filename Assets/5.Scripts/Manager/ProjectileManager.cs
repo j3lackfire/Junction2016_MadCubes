@@ -19,7 +19,23 @@ public class ProjectileManager : MonoBehaviour {
     {
         BasicProjectile bp = PrefabsManager.SpawnProjectile(type);
         bp = GameObject.Instantiate(bp);
-        bp.Init(_isEnemy, damage, startPos, target.transform.position, target, bulletType);
+        if (type == ProjectileType.Fire_Hero)
+        {
+            bp.Init(_isEnemy, damage, startPos, target.transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f),Random.Range(-0.5f, 0.5f))
+                , target, bulletType);
+            bp.isChaseBullet = false;
+        }
+        else
+        {
+            if(type == ProjectileType.Water_Hero)
+            {
+                bp.Init(_isEnemy, damage, startPos, target.transform.position, target, bulletType);
+            }
+            else
+            {
+                bp.Init(_isEnemy, damage, startPos, target.transform.position, target, bulletType);
+            }
+        }
         projectileList.Add(bp);
         return bp;
     }
