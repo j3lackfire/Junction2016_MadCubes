@@ -24,6 +24,6 @@ Junction Jam game project - A game I made for Hack Junction 2016 / Game Jam cate
 
 - Git: https://github.com/j3lackfire/JunctionJam
 
-- Youtube demo:
+- Youtube demo: https://youtu.be/jvX2njXB13U
 
-- Playable demo:
+- Playable demo: https://drive.google.com/file/d/0BzStdJsV11nld05QRkVnRnFiVDA/view
