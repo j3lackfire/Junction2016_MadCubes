@@ -4,18 +4,26 @@ Junction Jam game project - A game I made for Hack Junction 2016 / Game Jam cate
 
 ![alt tag](https://github.com/j3lackfire/JunctionJam/blob/master/_Info/Capture.PNG)
 
--Name: Mad Cubes.
+- Name: Mad Cubes.
 
--Theme: Resurrection (Given at site).
+- Theme: Resurrection (Given at site).
 
--Date: 25-27 november 2016.
+- Goal and objectives: You have to defend the green cargo to reach the objectives while the evil minions try to attack and destroy the cube. 
 
--Junction website: https://hackjunction.com/
+- Specialities: Upon dying and ressurected, your hero will be revived and ativate his special skill. It is the only way to win because the enemy will be a lot. So you quite need to die a lot to win. But you can't die too much since the creep will just attack the cargo instead of you, which in turn a game over.
 
--Devpost: https://devpost.com/software/junctionjam
+- Control: Left click to select cube, right click to oder cube to move or attack.
 
--Git: https://github.com/j3lackfire/JunctionJam
+- Date: 25-27 november 2016.
 
--Youtube demo:
+- Junction website: https://hackjunction.com/
 
--Playable demo:
+- Devpost of this game: https://devpost.com/software/junctionjam
+ 
+- Other game jam submission: https://junction2016.devpost.com/submissions/search?utf8=%E2%9C%93&filter%5Bprimary+track%5D%5B%5D=game+jam
+
+- Git: https://github.com/j3lackfire/JunctionJam
+
+- Youtube demo:
+
+- Playable demo:
