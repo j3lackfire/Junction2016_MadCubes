@@ -2,7 +2,7 @@
 
 Junction Jam game project - A game I made for Hack Junction 2016 / Game Jam category
 
-![alt tag](https://github.com/j3lackfire/JunctionJam/blob/master/_Info/Capture.PNG)
+![alt tag](https://github.com/j3lackfire/JunctionJam/blob/master/Capture.PNG)
 
 - Name: Mad Cubes.
 
