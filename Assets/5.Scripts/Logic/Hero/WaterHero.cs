@@ -2,7 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class WaterHero : HeroObject {
+public class WaterHero : BaseHero {
+
+    public override ProjectileType GetProjectileType()
+    {
+        return ProjectileType.Water_Hero_Laser;
+    }
+
+    public override ObjectType GetObjectType()
+    {
+        return ObjectType.Water_Hero;
+    }
 
     protected override void ObjectAttack()
     {
@@ -15,17 +25,17 @@ public class WaterHero : HeroObject {
     {
         if (targetObject != null)
         {
-            projectileManager.CreateProjectile(ProjectileType.Water_Hero, false, objectData.objectDamange, transform.position , targetObject, GetObjectElement());
+            projectileManager.CreateProjectile(ProjectileType.Water_Hero_Laser, false, objectData.damange, transform.position , this, targetObject.transform.position, targetObject);
             testRay = new Ray(transform.position, targetObject.transform.position - transform.position);
-            RaycastHit[] hitObject = Physics.RaycastAll(testRay, 50f);            
-            for (int i = 0; i < hitObject.Length; i ++)
+            RaycastHit[] hitObject = Physics.RaycastAll(testRay, 50f);
+            for (int i = 0; i < hitObject.Length; i++)
             {
-                BaseElementObject hit = hitObject[i].transform.GetComponent<BaseElementObject>();
+                BaseObject hit = hitObject[i].transform.GetComponent<BaseObject>();
                 if (hit != null)
                 {
                     if (hit.isEnemy)
                     {
-                        hit.ReceiveDamage(objectData.objectDamange, GetObjectElement());
+                        hit.ReceiveDamage(objectData.damange);
                     }
                 }
             }
@@ -36,11 +46,6 @@ public class WaterHero : HeroObject {
         }
     }
 
-    public override GameElement GetObjectElement()
-    {
-        return GameElement.Water;
-    }
-
     public override void OnHeroRessurect()
     {
         base.OnHeroRessurect();
@@ -49,10 +54,10 @@ public class WaterHero : HeroObject {
 
     IEnumerator MakeItRain()
     {
-        List<BaseElementObject> enemyList = Directors.enemyManager.objectList;
+        List<BaseObject> enemyList = Directors.enemyManager.objectList;
         for (int i = 0; i < enemyList.Count; i++)
         {
-            if (enemyList[i] != null && (enemyList[i].objectData.objectAttackRange >= 10))
+            if (enemyList[i] != null && (enemyList[i].objectData.attackRange >= 10))
             {
                 targetObject = enemyList[i];
                 DealDamageToTarget();

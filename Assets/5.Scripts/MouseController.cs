@@ -3,20 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-public class MouseController : MonoBehaviour {
+public class MouseController : BaseManager
+{
 
     public GameObject hightLightCircle;
     public GameObject movementCircle;
     public GameObject attackedCircle;
 
     [SerializeField]
-    public HeroObject currentlySelectedHero;
+    public BaseHero currentlySelectedHero;
 
     private Ray ray;
     private RaycastHit hit;
     private int hitLayer = 0;
 
-    public void Init()
+    public override void Init()
     {
         //Layers:
         //8 = Ground (for movement)
@@ -27,7 +28,7 @@ public class MouseController : MonoBehaviour {
         attackedCircle.SetActive(false);
     }
 
-    public void DoUpdate()
+    public override void DoUpdate()
     {
         
         //Click
@@ -43,7 +44,7 @@ public class MouseController : MonoBehaviour {
                 switch (hit.transform.tag)
                 {
                     case "Hero":
-                        currentlySelectedHero = hit.transform.GetComponent<HeroObject>();
+                        currentlySelectedHero = hit.transform.GetComponent<BaseHero>();
                         //hero.SetMovePosition(hit.point);
                         hightLightCircle.SetActive(true);
                         hightLightCircle.transform.parent = currentlySelectedHero.transform;
@@ -78,7 +79,7 @@ public class MouseController : MonoBehaviour {
                         case "Enemy":
                             if (currentlySelectedHero != null)
                             {
-                                BaseElementObject baseTarget = hit.transform.gameObject.GetComponent<BaseElementObject>();
+                                BaseObject baseTarget = hit.transform.gameObject.GetComponent<BaseObject>();
                                 currentlySelectedHero.ChargeAtObject(baseTarget);
                                 SetAttackMark(baseTarget.gameObject);
                             }
@@ -106,11 +107,12 @@ public class MouseController : MonoBehaviour {
         CheckKeyboardInput();
     }
 
+    //TODO : Re check this function
     private void CheckKeyboardInput()
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            currentlySelectedHero = PlayerManager.fireHero;
+            currentlySelectedHero = Directors.playerManager.heroList[0];
             //hero.SetMovePosition(hit.point);
             hightLightCircle.SetActive(true);
             hightLightCircle.transform.parent = currentlySelectedHero.transform;
@@ -118,7 +120,7 @@ public class MouseController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            currentlySelectedHero = PlayerManager.waterHero;
+            currentlySelectedHero = Directors.playerManager.heroList[1];
             //hero.SetMovePosition(hit.point);
             hightLightCircle.SetActive(true);
             hightLightCircle.transform.parent = currentlySelectedHero.transform;

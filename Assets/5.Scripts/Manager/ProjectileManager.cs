@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class ProjectileManager : MonoBehaviour {
-
+public class ProjectileManager : BaseManager
+{ 
     List<BasicProjectile> projectileList = new List<BasicProjectile>();
 
-    public void Init() { }
+    public override void Init() { }
     
-    public void DoUpdate()
+    public override void DoUpdate()
     {
         for (int i = 0; i < projectileList.Count; i++)
         {
@@ -15,29 +15,16 @@ public class ProjectileManager : MonoBehaviour {
         }
     }
 
-    public BasicProjectile CreateProjectile(ProjectileType type, bool _isEnemy, int damage, Vector3 startPos, BaseElementObject target, GameElement bulletType)
+    public BasicProjectile CreateProjectile(ProjectileType type, bool _isEnemy, int _damage, Vector3 _startPos, BaseObject _attacker, Vector3 _endPos, BaseObject _target)
     {
-        BasicProjectile bp = PrefabsManager.SpawnProjectile(type);
-        bp = GameObject.Instantiate(bp);
-        if (type == ProjectileType.Fire_Hero)
-        {
-            bp.Init(_isEnemy, damage, startPos, target.transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f),Random.Range(-0.5f, 0.5f))
-                , target, bulletType);
-            bp.isChaseBullet = false;
-        }
-        else
-        {
-            if(type == ProjectileType.Water_Hero)
-            {
-                bp.Init(_isEnemy, damage, startPos, target.transform.position, target, bulletType);
-            }
-            else
-            {
-                bp.Init(_isEnemy, damage, startPos, target.transform.position, target, bulletType);
-            }
-        }
-        projectileList.Add(bp);
-        return bp;
+        BasicProjectile projectile = PrefabsManager.SpawnProjectile(type);
+        projectile = Instantiate(projectile);
+        projectile.Init(type, _isEnemy, _damage);
+        projectile.InitPosition(_startPos, _endPos);
+        projectile.InitObjects(_attacker, _target);
+
+        projectileList.Add(projectile);
+        return projectile;
     }
 
     public void RemoveProjectile(BasicProjectile p)

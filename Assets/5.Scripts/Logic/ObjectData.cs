@@ -3,18 +3,23 @@ using System.Collections;
 
 [System.Serializable]
 public class ObjectData {
-    public float objectMoveSpeed;
+    //defined value (set in the editor)
+    public float moveSpeed;
 
-    public int objectMaxHealth;
-    public int objectHealth;
+    public int maxHealth;
 
-    public int objectDamange;
-    public float objectAttackRange;
+    public int damange;
+    public float attackRange;
+
+    public float respawnTime; //only use for hero
 
     public float attackDuration;
     public float dealDamageTime;
 
-    public int objectLevel;
+    //calculated value - code calculate value
+    public int health;
 
-    public float objectRespawnTime;
+    
+    public int level;
+    public float sight;
 }

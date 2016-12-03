@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class EnemyManager : ObjectManager {
     int currentSpawnLevel = 1;
 
-    public List<BaseElementObject> objectList = new List<BaseElementObject>();
+    public List<BaseObject> objectList = new List<BaseObject>();
 
     public List<GameObject> enemySpawnPos = new List<GameObject>();
 
@@ -31,20 +31,25 @@ public class EnemyManager : ObjectManager {
         {
             objectList[i].DoUpdate();
         }
-        countDown -= Time.deltaTime;
-        if (countDown <= 0)
-        {
-            SpawnEnemy(GameElement.Fire);
-            if(Random.Range(0,7) < 1)
-            {
-                SpawnEnemy(GameElement.Water);
-            }
-            countDown += Random.Range(summonRate * 0.75f, summonRate * 1.25f);
-        }
+        CheckSpawnUnit();
         CheckIncreaseLevel();
     }
 
-    void CheckIncreaseLevel()
+    private void CheckSpawnUnit()
+    {
+        countDown -= Time.deltaTime;
+        if (countDown <= 0)
+        {
+            SpawnUnit(ObjectType.Fire_Creep);
+            if (Random.Range(0, 7) < 1)
+            {
+                SpawnUnit(ObjectType.Water_Creep);
+            }
+            countDown += Random.Range(summonRate * 0.75f, summonRate * 1.25f);
+        }
+    }
+
+    private void CheckIncreaseLevel()
     {
         levelCountDown -= Time.deltaTime;
         if (levelCountDown <= 0)
@@ -58,24 +63,26 @@ public class EnemyManager : ObjectManager {
         }
     }
 
-    public override void RemoveObject(BaseElementObject baseObject)
+    public override void RemoveObject(BaseObject baseObject)
     {
         objectList.Remove(baseObject);
     }
 
-    public void SpawnEnemy(GameElement type)
+    //TODO rewrote this function !!!
+    public void SpawnUnit(ObjectType objectType)
     {
-        BaseElementObject creep = PrefabsManager.SpawnUnit(type, true);
+        BaseObject creep = PrefabsManager.SpawnUnit(objectType);
         //set at random position, for now
-        creep.transform.position = enemySpawnPos[Random.Range(0 , enemySpawnPos.Count)].transform.position;
+        creep.transform.position = enemySpawnPos[Random.Range(0, enemySpawnPos.Count)].transform.position;
         creep.Init(this, true, currentSpawnLevel);
         objectList.Add(creep);
         creep.ChargeAtObject(RequestTarget(creep));
+        creep.transform.parent = transform;
     }
 
-    public override BaseElementObject RequestTarget(BaseElementObject baseObject)
+    public override BaseObject RequestTarget(BaseObject baseObject)
     {
-        BaseElementObject returnObject = null;
+        BaseObject returnObject = null;
         float distance = 999f;
         for (int i = 0; i < Directors.playerManager.heroList.Count; i ++)
         {

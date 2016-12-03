@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Directors : MonoBehaviour {
+
+    public static List<BaseManager> managersList = new List<BaseManager>();
 
     public static CameraController cameraController;
     public static MouseController mouseController;
@@ -69,24 +71,40 @@ public class Directors : MonoBehaviour {
         }
         projectileManager = tempProjectileManager;
 
+
+        managersList = new List<BaseManager>();
+        managersList.Add(cameraController);
+        managersList.Add(mouseController);
+        managersList.Add(enemyManager);
+        managersList.Add(playerManager);
+        managersList.Add(projectileManager);
+        managersList.Add(uiMaster);
     }
 
     private void InitManagers()
     {
-        playerManager.Init();
-        enemyManager.Init();
-        cameraController.Init();
-        mouseController.Init();
-        projectileManager.Init();
+        for (int i = 0; i < managersList.Count; i ++)
+        {
+            managersList[i].Init();
+        }
+        //playerManager.Init();
+        //enemyManager.Init();
+        //cameraController.Init();
+        //mouseController.Init();
+        //projectileManager.Init();
     }
 
     private void UpdateManagers()
     {
-        mouseController.DoUpdate();
-        cameraController.DoUpdate();
-        playerManager.DoUpdate();
-        enemyManager.DoUpdate();
-        projectileManager.DoUpdate();
+        for (int i = 0; i < managersList.Count; i++)
+        {
+            managersList[i].DoUpdate();
+        }
+        //mouseController.DoUpdate();
+        //cameraController.DoUpdate();
+        //playerManager.DoUpdate();
+        //enemyManager.DoUpdate();
+        //projectileManager.DoUpdate();
     }
 
 }

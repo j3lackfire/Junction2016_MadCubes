@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 public class PlayerManager : ObjectManager {
 
-    public List<HeroObject> heroList = new List<HeroObject>();
+    public List<BaseHero> heroList = new List<BaseHero>();
     public static CargoKart cargoKart;
-    public static FireHero fireHero;
-    public static WaterHero waterHero;
 
     public override void Init()
     {
@@ -15,17 +13,15 @@ public class PlayerManager : ObjectManager {
         {
             cargoKart = FindObjectOfType<CargoKart>();
         }
-        fireHero = FindObjectOfType<FireHero>();
-        waterHero = FindObjectOfType<WaterHero>();
 
         cargoKart.Init(this, false, 1);
 
-        heroList.AddRange(FindObjectsOfType<HeroObject>());
+        heroList.AddRange(FindObjectsOfType<BaseHero>());
         for (int i = 0; i < heroList.Count; i++)
         {
+            //default level is 1
             heroList[i].Init(this, false, 1);
         }
-
     }
 
     public override void DoUpdate()
@@ -38,9 +34,9 @@ public class PlayerManager : ObjectManager {
         cargoKart.DoUpdate();
     }
 
-    public override BaseElementObject RequestTarget(BaseElementObject baseObject)
+    public override BaseObject RequestTarget(BaseObject baseObject)
     {
-        BaseElementObject returnObject = null;
+        BaseObject returnObject = null;
         float distance = 999f;
         for (int i = 0; i < Directors.enemyManager.objectList.Count; i++)
         {
@@ -51,7 +47,7 @@ public class PlayerManager : ObjectManager {
                 distance = (Directors.enemyManager.objectList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
-        if (distance >= baseObject.objectData.objectAttackRange + 2f)
+        if (distance >= baseObject.objectData.attackRange + baseObject.objectData.sight)
         {
             return null;
         } else

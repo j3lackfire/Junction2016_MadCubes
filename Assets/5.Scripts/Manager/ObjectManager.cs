@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class ObjectManager : MonoBehaviour {
+public class ObjectManager : BaseManager
+{
+    public override void Init() { }
 
-    public virtual void Init() { }
+    public override void DoUpdate() { }
 
-    public virtual void DoUpdate() { }
+    public virtual void RemoveObject(BaseObject baseObject) { }
 
-    public virtual void RemoveObject(BaseElementObject baseObject) { }
-
-    public virtual BaseElementObject RequestTarget(BaseElementObject baseObject) { return null; }
-
+    public virtual BaseObject RequestTarget(BaseObject baseObject) { return null; }
 }

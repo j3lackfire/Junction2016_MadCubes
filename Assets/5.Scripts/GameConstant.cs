@@ -1,14 +1,21 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class GameConstant {
+﻿public class GameConstant {
     //CAMERA
     public static float cameraMoveSpeed = 8f;
     public static float cameraRotateAngle = 45f;
 
-    //UNIT FIGHTING
-    public static float unitTargetReachThreshold = 0.4f;
+    public static float idleCheckFrequency = 0.25f;
+    public static float runningReachingDistance = 0.5f;
 
-    public static float cubeMovementSpeed = 8f;
-    public static float cubeDealDamageTime = 0.35f;
+    public static int objectChargeCountdownValue = 10;
+}
+
+//That's it's for now.
+public enum ObjectType
+{
+    Invalid, //not defined or base class.
+    CargoKart,
+    Fire_Creep,
+    Fire_Hero,
+    Water_Creep,
+    Water_Hero
 }

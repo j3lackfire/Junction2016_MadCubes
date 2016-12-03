@@ -2,23 +2,29 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class FireHero : HeroObject {
+public class FireHero : BaseHero {
 
-    public override GameElement GetObjectElement()
+    public override ProjectileType GetProjectileType()
     {
-        return GameElement.Fire;
+        return ProjectileType.Fire_Hero_Laser;
+    }
+
+    public override ObjectType GetObjectType()
+    {
+        return ObjectType.Fire_Hero;
     }
 
     protected override void DealDamageToTarget()
     {
-        projectileManager.CreateProjectile(ProjectileType.Fire_Hero, false, objectData.objectDamange, transform.position, targetObject, GetObjectElement());
+        //projectileManager.CreateProjectile(ProjectileType.Fire_Hero, false, objectData.damange, transform.position, targetObject, GetObjectElement());
+        targetObject.ReceiveDamage(objectData.damange);
     }
 
     protected override void ObjectAttack()
     {
         float timeToDealDamage = 0.3f;
-        attackCountDown += Time.deltaTime;
-        if (attackCountDown >= timeToDealDamage)
+        attackCountUp += Time.deltaTime;
+        if (attackCountUp >= timeToDealDamage)
         {
             if (targetObject == null)
             {
@@ -38,7 +44,7 @@ public class FireHero : HeroObject {
                 timeToDealDamage += 0.2f;
             }
         }
-        if (attackCountDown >= objectData.attackDuration)
+        if (attackCountUp >= objectData.attackDuration)
         {
             FinnishAttackTarget();
         }
@@ -50,12 +56,14 @@ public class FireHero : HeroObject {
         StartCoroutine(MakeItRain());
     }
 
-    IEnumerator MakeItRain()
+    //TODO : Find better solution
+    //is there a way to remove ienumerator because it doesn't match my DoUpdate style very good :/
+    private IEnumerator MakeItRain()
     {
-        List<BaseElementObject> enemyList = Directors.enemyManager.objectList;
+        List<BaseObject> enemyList = Directors.enemyManager.objectList;
         for (int i = 0; i < enemyList.Count; i ++)
         {
-            if (enemyList[i] != null && (enemyList[i].transform.position - transform.position).magnitude <= 20f)
+            if (enemyList[i] != null && Ultilities.GetDistanceBetween(gameObject, enemyList[i].gameObject) <= objectData.attackRange * 2f)
             {
                 targetObject = enemyList[i];
                 DealDamageToTarget();
@@ -63,30 +71,5 @@ public class FireHero : HeroObject {
                 yield return new WaitForSeconds(0.05f);
             }
         }
-
-        //float seconds = 1.5f;
-        //float countDown = 0.1f;
-        //while (true)
-        //{
-        //    seconds -= Time.deltaTime;
-        //    countDown -= Time.deltaTime;
-        //    if (countDown <= 0f)
-        //    {
-        //        if (targetObject == null)
-        //        {
-        //            targetObject = objectManager.RequestTarget(this);
-        //            if (targetObject != null)
-        //            {
-        //                DealDamageToTarget();
-        //            }
-        //        }
-        //        countDown = 0.1f;
-        //    }
-        //    if (seconds <= 0)
-        //    {
-        //        break;
-        //    }
-        //    yield return null;
-        //}
     }
 }

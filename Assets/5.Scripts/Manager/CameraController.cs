@@ -1,23 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraController : MonoBehaviour {
+public class CameraController : BaseManager {
 
-    private Vector3 defaultCameraRotation;
-    private Vector3 currentCameraRotation;
+    private Animator camAnimator;
 
-    Animator camAnimator;
-
-    public void Init()
+    public override void Init()
     {
-        defaultCameraRotation = transform.localEulerAngles;
-        currentCameraRotation = defaultCameraRotation;
         camAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
-    public void DoUpdate()
+    public override void DoUpdate()
     {
-        //CheckForPlayerInput();
     }
 
     public void ScreenShake(ScreenShakeMagnitude magnitude)
@@ -37,15 +31,6 @@ public class CameraController : MonoBehaviour {
     {
         transform.position += delta;
     }
-}
-
-public enum Direction
-{
-    Left,
-    Right,
-    Up,
-    Down,
-    Unassigned
 }
 
 public enum ScreenShakeMagnitude
