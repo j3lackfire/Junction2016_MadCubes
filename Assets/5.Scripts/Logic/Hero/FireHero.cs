@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class FireHero : BaseHero {
 
+    //for the fire hero unique super fast shooting
+    float timeToDealDamage = 0.3f;
+
     public override ProjectileType GetProjectileType()
     {
         return ProjectileType.Fire_Hero_Laser;
@@ -16,13 +19,19 @@ public class FireHero : BaseHero {
 
     protected override void DealDamageToTarget()
     {
-        //projectileManager.CreateProjectile(ProjectileType.Fire_Hero, false, objectData.damange, transform.position, targetObject, GetObjectElement());
-        targetObject.ReceiveDamage(objectData.damange);
+        projectileManager.CreateProjectile(GetProjectileType(), isEnemy, objectData.damange, transform.position, this, 
+            targetObject.transform.position + new Vector3(Random.Range(-1f,1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)), targetObject);
+    }
+
+    protected override void StartAttackTarget()
+    {
+        base.StartAttackTarget();
+        timeToDealDamage = 0.3f;
     }
 
     protected override void ObjectAttack()
     {
-        float timeToDealDamage = 0.3f;
+        timeToDealDamage = 0.3f;
         attackCountUp += Time.deltaTime;
         if (attackCountUp >= timeToDealDamage)
         {
@@ -31,17 +40,18 @@ public class FireHero : BaseHero {
                 targetObject = objectManager.RequestTarget(this);
                 if (targetObject == null)
                 {
+                    //set this value to super high so the hero will not attack again in this turn
                     timeToDealDamage = 999f;
                 }
             }
-            if (timeToDealDamage >= 1.15f)
+            if (timeToDealDamage >= 1.25f)
             {
                 timeToDealDamage = 999f;
             }
             if (timeToDealDamage != 999f)
             {
                 DealDamageToTarget();
-                timeToDealDamage += 0.2f;
+                timeToDealDamage += 0.05f;
             }
         }
         if (attackCountUp >= objectData.attackDuration)

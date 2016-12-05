@@ -25,7 +25,8 @@ public class WaterHero : BaseHero {
     {
         if (targetObject != null)
         {
-            projectileManager.CreateProjectile(ProjectileType.Water_Hero_Laser, false, objectData.damange, transform.position , this, targetObject.transform.position, targetObject);
+            Vector3 bulletEndPos = transform.position + (targetObject.transform.position - transform.position).normalized * 75f;
+            projectileManager.CreateProjectile(ProjectileType.Water_Hero_Laser, false, objectData.damange, transform.position , this, bulletEndPos, targetObject);
             testRay = new Ray(transform.position, targetObject.transform.position - transform.position);
             RaycastHit[] hitObject = Physics.RaycastAll(testRay, 50f);
             for (int i = 0; i < hitObject.Length; i++)
