@@ -39,6 +39,8 @@ public class BaseObject : PooledObject
 
     public virtual ProjectileType GetProjectileType() { return ProjectileType.Invalid; }
 
+    public virtual CorpseType GetCorpseType() { return CorpseType.Invalid; } 
+
     public virtual void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
         isEnemy = isEnemyTeam;
@@ -339,20 +341,23 @@ public class BaseObject : PooledObject
         //dead effect.
         for (int i = 0; i < 15; i++)
         {
-            GameObject corpse = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            corpse.transform.position = gameObject.transform.position + (new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
-            corpse.transform.localScale = new Vector3(0.3333f, 0.3333f, 0.3333f);
-            corpse.GetComponent<Renderer>().material = PrefabsManager.GetMaterialColor(GetObjectType());
-            corpse.AddComponent<Rigidbody>();
-            Destroy(corpse, Random.Range(2.5f, 3.5f));
+            Corpse corpse = PrefabsManager.SpawnCorpse(GetCorpseType());
+            corpse.Init(transform.position);
+
+            //GameObject corpse = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //corpse.transform.position = gameObject.transform.position + (new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
+            //corpse.transform.localScale = new Vector3(0.3333f, 0.3333f, 0.3333f);
+            //corpse.GetComponent<Renderer>().material = PrefabsManager.GetMaterialColor(GetObjectType());
+            //corpse.AddComponent<Rigidbody>();
+            //Destroy(corpse, Random.Range(2.5f, 3.5f));
         }
         //end dead effect
 
         //TODO : remove this later
-        //if (isEnemy && objectData.attackRange == 9f)
-        //{
-        //    Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
-        //}
+        if (GetObjectType() == ObjectType.Water_Creep)
+        {
+            Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
+        }
     }
 
     protected virtual void KillObject()

@@ -11,4 +11,9 @@ public class FireCreep : BaseUnit {
     {
         return ObjectType.Fire_Creep;
     }
+
+    public override CorpseType GetCorpseType()
+    {
+        return CorpseType.Fire_Creep_Corpse;
+    }
 }

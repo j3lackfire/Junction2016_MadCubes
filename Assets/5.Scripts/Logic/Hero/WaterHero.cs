@@ -14,6 +14,11 @@ public class WaterHero : BaseHero {
         return ObjectType.Water_Hero;
     }
 
+    public override CorpseType GetCorpseType()
+    {
+        return CorpseType.Water_Creep_Corpse;
+    }
+
     protected override void ObjectAttack()
     {
         base.ObjectAttack();

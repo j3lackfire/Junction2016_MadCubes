@@ -17,6 +17,7 @@ public class Directors : MonoBehaviour {
 
     void Awake()
     {
+        PrefabsManager.ClearPool();
         PrepareManagers();
         InitManagers();
     }

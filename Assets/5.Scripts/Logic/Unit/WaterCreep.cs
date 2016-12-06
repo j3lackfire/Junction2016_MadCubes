@@ -12,4 +12,9 @@ public class WaterCreep : BaseUnit {
     {
         return ObjectType.Water_Creep;
     }
+
+    public override CorpseType GetCorpseType()
+    {
+        return CorpseType.Water_Creep_Corpse;
+    }
 }

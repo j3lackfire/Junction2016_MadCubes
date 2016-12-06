@@ -8,6 +8,7 @@ public class PrefabsManager {
     
     private static string unitDataPath = "Prefabs/Units/";
     private static string projectileDataPath = "Prefabs/Projectile/";
+    private static string corpseDataPath = "Prefabs/Corpses/";
 
     private static string unitMaterialDataPath = "Materials/Units/";
 
@@ -63,28 +64,34 @@ public class PrefabsManager {
 
     public static BaseObject SpawnUnit(ObjectType type)
     {
+        if (type == ObjectType.Invalid)
+        {
+            Debug.Log("<color=red>OBJECT TYPE not assigned. PLEASE CHECK !!!</color>");
+            Debug.Break();
+            return null;
+        }
         return GetObjectFromPool(type.ToString(), unitDataPath) as BaseUnit;
     }
+    
+    public static Corpse SpawnCorpse(CorpseType type)
+    {
+        if (type == CorpseType.Invalid)
+        {
+            Debug.Log("<color=red>CORPSE TYPE not assigned. PLEASE CHECK !!!</color>");
+            Debug.Break();
+            return null;
+        }
+        return GetObjectFromPool(type.ToString(), corpseDataPath) as Corpse;
+    }
 
-    //TODO recheck these function
     public static BasicProjectile SpawnProjectile(ProjectileType projectileType)
     {
-        switch (projectileType)
+        if(projectileType == ProjectileType.Invalid)
         {
-            case ProjectileType.Fire_Hero_Laser:
-            case ProjectileType.Water_Hero_Laser:
-            case ProjectileType.Fire_Creep_Projectile:
-            case ProjectileType.Water_Creep_Projectile:
-                //Do nothing since my pool is soooo good now :p
-                break;
-            case ProjectileType.Invalid:
-            default:
-                Debug.Log("<color=red>PROJECTILE not defined !!!! please check asap !!!  </color>");
-                Debug.Break();
-                return null;
-                //break;
+            Debug.Log("<color=red>PROJECTILE not defined !!!! please check asap !!!  </color>");
+            Debug.Break();
+            return null;
         }
-        //Debug.Log(projectileDataPath + objectPath);
         return GetObjectFromPool(projectileType.ToString(), projectileDataPath) as BasicProjectile;
     }
 
