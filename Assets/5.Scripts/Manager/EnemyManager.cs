@@ -11,18 +11,16 @@ public class EnemyManager : ObjectManager {
     public GameObject spawnPointParent;
 
     public float levelCountDown;
-    public float increaseLevelRate = 10f; //10 seconds
 
     public float summonRate;
-
+    private float spawnCountDown = 1;
     public override void Init()
     {
         base.Init();
-        levelCountDown = increaseLevelRate;
-        summonRate = 0.35f;
+        spawnCountDown = 1;
+        levelCountDown = GameConstant.increaseSpawnTime;
+        summonRate = GameConstant.initialSpawnRate;
     }
-
-    float countDown = 1;
 
     public override void DoUpdate()
     {
@@ -37,15 +35,20 @@ public class EnemyManager : ObjectManager {
 
     private void CheckSpawnUnit()
     {
-        countDown -= Time.deltaTime;
-        if (countDown <= 0)
+        spawnCountDown -= Time.deltaTime;
+        if (spawnCountDown <= 0)
         {
             SpawnUnit(ObjectType.Fire_Creep);
-            if (Random.Range(0, 7) < 1)
+            if (Random.Range(0, GameConstant.spawnWaterCreepOdds) < 1)
             {
                 SpawnUnit(ObjectType.Water_Creep);
             }
-            countDown += Random.Range(summonRate * 0.75f, summonRate * 1.25f);
+            spawnCountDown += Random.Range(summonRate * 0.75f, summonRate * 1.25f);
+
+            //BaseObject test =SpawnUnit(ObjectType.Water_Creep);
+            //test.objectData.maxHealth = 99999;
+            //test.objectData.health = test.objectData.maxHealth;
+            //spawnCountDown += 999999;
         }
     }
 
@@ -54,10 +57,10 @@ public class EnemyManager : ObjectManager {
         levelCountDown -= Time.deltaTime;
         if (levelCountDown <= 0)
         {
-            levelCountDown += increaseLevelRate;
-            if (summonRate >= 0.07f)
+            levelCountDown += GameConstant.increaseSpawnTime;
+            if (summonRate >= GameConstant.maxSpawnRate)
             {
-                summonRate -= 0.02f;
+                summonRate -= GameConstant.spawnRateIncreaseValue;
             }
             currentSpawnLevel++;
         }
@@ -69,7 +72,7 @@ public class EnemyManager : ObjectManager {
     }
 
     //TODO rewrote this function !!!
-    public void SpawnUnit(ObjectType objectType)
+    public BaseObject SpawnUnit(ObjectType objectType)
     {
         BaseObject creep = PrefabsManager.SpawnUnit(objectType);
         //set at random position, for now
@@ -78,6 +81,7 @@ public class EnemyManager : ObjectManager {
         objectList.Add(creep);
         creep.ChargeAtObject(RequestTarget(creep));
         creep.transform.parent = transform;
+        return creep;
     }
 
     public override BaseObject RequestTarget(BaseObject baseObject)

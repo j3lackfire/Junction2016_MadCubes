@@ -1,49 +1,94 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 //TODO : Rewrote this entire class.
 //Also try to add pools too
 public class PrefabsManager {
-
+    
     private static string unitDataPath = "Prefabs/Units/";
     private static string projectileDataPath = "Prefabs/Projectile/";
 
     private static string unitMaterialDataPath = "Materials/Units/";
 
-    //TODO rewrote this function
+    //object poolings
+    public static Dictionary<string, List<PooledObject>> masterPool = new Dictionary<string, List<PooledObject>>();
+    public static long objectCounts;
+
+
+    //on scene reload
+    public static void ClearPool()
+    {
+        objectCounts = 0;
+        masterPool.Clear();
+    }
+
+    public static PooledObject GetObjectFromPool(string objectType, string resourcePath)
+    {
+        PooledObject objectPrefab;
+        PooledObject returnObject;
+        //create a tempt list
+        List<PooledObject> tempList = null;
+        //try to get the list of said value from the pool
+        masterPool.TryGetValue(objectType, out tempList);
+        if (tempList == null)
+        {
+            //if we don't have that list yet, create it, and load the prefab.
+            tempList = new List<PooledObject>();
+            masterPool.Add(objectType, tempList);
+            objectPrefab = (Resources.Load(resourcePath + objectType) as GameObject).GetComponent<PooledObject>();
+            //the first value of a list will always be the value.
+            tempList.Add(objectPrefab);
+        } else
+        {
+            objectPrefab = tempList[0];
+        }
+        if (tempList.Count <= 1)
+        {
+            //if the pool is empty, we must instantiate a new variable
+            returnObject = GameObject.Instantiate<PooledObject>(objectPrefab);
+            returnObject.SetPool(tempList);
+        } else
+        {
+            //0 is the prefab value.
+            returnObject = tempList[1];
+            tempList.RemoveAt(1);
+            returnObject.gameObject.SetActive(true);
+        }
+        returnObject.id = objectCounts;
+        objectCounts++;
+        returnObject.transform.parent = Directors.mouseController.transform;
+        return returnObject;
+    }
+
     public static BaseObject SpawnUnit(ObjectType type)
     {
-        BaseObject _unit;
-        _unit = (Resources.Load(unitDataPath + type.ToString()) as GameObject).GetComponent<BaseObject>();
-        BaseObject unit = GameObject.Instantiate(_unit);
-
-        return unit;
+        return GetObjectFromPool(type.ToString(), unitDataPath) as BaseUnit;
     }
 
     //TODO recheck these function
     public static BasicProjectile SpawnProjectile(ProjectileType projectileType)
     {
-        string objectPath = string.Empty;
         switch (projectileType)
         {
             case ProjectileType.Fire_Hero_Laser:
             case ProjectileType.Water_Hero_Laser:
             case ProjectileType.Fire_Creep_Projectile:
             case ProjectileType.Water_Creep_Projectile:
-                objectPath = projectileType.ToString();
+                //Do nothing since my pool is soooo good now :p
                 break;
             case ProjectileType.Invalid:
             default:
                 Debug.Log("<color=red>PROJECTILE not defined !!!! please check asap !!!  </color>");
                 Debug.Break();
-                break;
+                return null;
+                //break;
         }
         //Debug.Log(projectileDataPath + objectPath);
-        BasicProjectile projectile = (Resources.Load(projectileDataPath + objectPath) as GameObject).GetComponent<BasicProjectile>();
-        return projectile;
+        return GetObjectFromPool(projectileType.ToString(), projectileDataPath) as BasicProjectile;
     }
 
-    //TODO : recheck this function too
+    //TODO : recheck this function
     public static Material GetMaterialColor(ObjectType unitType)
     {
         string objectPath = string.Empty;
@@ -65,4 +110,7 @@ public class PrefabsManager {
         _mat = (Resources.Load(unitMaterialDataPath + objectPath)) as Material;
         return _mat;
     }
+
 }
+
+

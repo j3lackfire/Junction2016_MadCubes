@@ -17,9 +17,11 @@ public class ObjectData {
     public float dealDamageTime;
 
     //calculated value - code calculate value
+    [HideInInspector]
     public int health;
 
-    
+    [HideInInspector]
     public int level;
+    [HideInInspector]
     public float sight;
 }

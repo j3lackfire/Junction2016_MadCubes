@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class BaseObject : MonoBehaviour
+public class BaseObject : PooledObject
 {
     //COMPONENTS
     protected NavMeshAgent navMeshAgent;
@@ -28,7 +29,9 @@ public class BaseObject : MonoBehaviour
     protected bool isDamageDeal;
     protected float attackCountUp;
     //[SerializeField]
+    protected long targetID;
     protected BaseObject targetObject;
+    
     protected Vector3 targetPosition;
     protected int objectChargeCountdown;
 
@@ -69,8 +72,8 @@ public class BaseObject : MonoBehaviour
     {
         objectData.level = level;
         objectData.sight = objectData.attackRange + 3f;
-        objectData.maxHealth = objectData.maxHealth + (int)(objectData.maxHealth * level * 0.35f);
-        objectData.damange = objectData.damange + (int)(objectData.damange * level * 0.35f);
+        objectData.maxHealth = objectData.maxHealth + (int)(objectData.maxHealth * level * GameConstant.normalCreepHealthIncreasePerLevel);
+        objectData.damange = objectData.damange + (int)(objectData.damange * level * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.health = objectData.maxHealth;
     }
 
@@ -159,7 +162,7 @@ public class BaseObject : MonoBehaviour
 
     protected virtual void ObjectCharging()
     {
-        if (targetObject == null)
+        if (IsTargetChanged())
         {
             SetState(ObjectState.Idle);
             return;
@@ -227,12 +230,23 @@ public class BaseObject : MonoBehaviour
         }
         else
         {
-            targetObject = target;
+            SetTargetObject(target);
             targetPosition = targetObject.transform.position;
             navMeshAgent.Resume();
             navMeshAgent.SetDestination(targetPosition);
             SetState(ObjectState.Charge);
         }
+    }
+
+    protected void SetTargetObject(BaseObject _target)
+    {
+        targetObject = _target;
+        targetID = _target.id;
+    }
+
+    protected bool IsTargetChanged()
+    {
+        return targetID != targetObject.id;    
     }
 
     protected bool IsTargetInRange()
@@ -247,7 +261,7 @@ public class BaseObject : MonoBehaviour
 
     protected virtual void StartAttackTarget()
     {
-        if (targetObject != null)
+        if (targetObject != null && !IsTargetChanged())
         {
             transform.LookAt(targetObject.transform.position);
             SetState(ObjectState.Attack);
@@ -265,7 +279,7 @@ public class BaseObject : MonoBehaviour
     //TODO recheck this function !!!!
     protected virtual void DealDamageToTarget()
     {
-        if (targetObject != null)
+        if (targetObject != null && !IsTargetChanged())
         {
             projectileManager.CreateProjectile(GetProjectileType(), isEnemy, objectData.damange, transform.position, this, targetObject.transform.position, targetObject);
             //targetObject.ReceiveDamage(10, this);
@@ -277,7 +291,7 @@ public class BaseObject : MonoBehaviour
         isDamageDeal = false;
         //The last check -> if enemy is attacking the cargo, while the hero is close, he should focus on the
         //hero instead. -> Might change later
-        if (targetObject != null && IsTargetInRange() && !isEnemy)
+        if (targetObject != null && targetObject.objectState != ObjectState.Die && !IsTargetChanged() && IsTargetInRange() && !isEnemy)
         {
             StartAttackTarget();
         }
@@ -313,6 +327,7 @@ public class BaseObject : MonoBehaviour
 
     public virtual void OnObjectDie()
     {
+        SetState(ObjectState.Die);
         DeadEffect();
         objectManager.RemoveObject(this);
         KillObject();
@@ -343,8 +358,11 @@ public class BaseObject : MonoBehaviour
     protected virtual void KillObject()
     {
         //TODO Use fucking pools man
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        ReturnToPool();
     }
+
+    
 }
 
 public enum ObjectState

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicProjectile : MonoBehaviour {
+public class BasicProjectile : PooledObject {
     //Manager
     protected ProjectileManager projectileManager;
     //Move speed of the projectile
@@ -24,6 +24,7 @@ public class BasicProjectile : MonoBehaviour {
     protected Vector3 targetPosition;
     [SerializeField]
     protected BaseObject targetObject;
+    protected long targetID;
 
     //is this bullet chase the target
     protected bool isChaseBullet;
@@ -49,42 +50,92 @@ public class BasicProjectile : MonoBehaviour {
     {
         attackerObject = _attacker;
         targetObject = _target;
+        targetID = _target.id;
     }
 
     public virtual void SetChaseBullet(bool _boo) { isChaseBullet = _boo; }
 
     public virtual void DoUpdate()
     {
-        CheckReachTarget();
+        MoveBullet();
+        if (isChaseBullet)
+        {
+            ChaseBulletFixedTargetPosition();
+        }
+        if (IsBulletReachFinalPosition())
+        {
+            DealDamageToTarget();
+            BulletEffect();
+            KillBullet();
+        }
+    }
+
+    protected void MoveBullet()
+    {
+        //move the bullet to the target position
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * projectileSpeed);
     }
 
     //chase bullet correct position count down
     int correctPositionCountDown = 10;
+    //only use for chase bullet because it need to follow the target
+    protected void ChaseBulletFixedTargetPosition()
+    {
+        correctPositionCountDown--;
+        if (correctPositionCountDown <= 0)
+        {
+            if (IsTargetChange())
+            {
+                //so it wouldn't check too much
+                correctPositionCountDown = 9999;
+                targetObject = null;
+            } else
+            {
+                targetPosition = targetObject.transform.position;
+                correctPositionCountDown = 10;
+            }
+        }
+        
+    }
 
-    protected virtual void CheckReachTarget()
+    protected bool IsTargetChange() //because of pooling
+    {
+        if (targetObject == null || targetObject.objectState == ObjectState.Die || targetObject.id != targetID)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    protected virtual bool IsBulletReachFinalPosition()
     {
         if ((transform.position - targetPosition).magnitude >= 0.5f)
         {
-            if (targetObject != null && isChaseBullet)
-            {
-                correctPositionCountDown--;
-                if (correctPositionCountDown <= 0)
-                {
-                    targetPosition = targetObject.transform.position;
-                    correctPositionCountDown = 10;
-                }
-            }
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * projectileSpeed);
+            return false;
         } else
         {
-            if (targetObject != null)
-            {
-                targetObject.ReceiveDamage(damage, attackerObject);
-            }
-            projectileManager.RemoveProjectile(this);
-            //Pools, pools, pools
-            Destroy(gameObject);
+            return true;
         }
+    }
+
+    protected virtual void DealDamageToTarget()
+    {
+        if (IsTargetChange()) { }
+        else
+        {
+            targetObject.ReceiveDamage(damage, attackerObject);
+        }
+    }
+
+    protected virtual void BulletEffect() { }
+
+    protected virtual void KillBullet()
+    {
+        projectileManager.RemoveProjectile(this);
+        ReturnToPool();
     }
 }
 

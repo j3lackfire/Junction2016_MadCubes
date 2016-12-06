@@ -202,7 +202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectData:
     moveSpeed: 8
-    maxHealth: 300
+    maxHealth: 200
     damange: 20
     attackRange: 10
     respawnTime: 0

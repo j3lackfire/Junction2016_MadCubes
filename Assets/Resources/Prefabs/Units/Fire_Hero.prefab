@@ -113,7 +113,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 1.8, y: 1.8, z: 1.8}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -720, z: 0}
   m_Children:
   - {fileID: 418854}
   - {fileID: 480588}
@@ -392,13 +392,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f1556eeea44bf24ca960aae9a861259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   objectData:
     moveSpeed: 10
-    maxHealth: 100
-    damange: 11
-    attackRange: 8
-    respawnTime: 2
-    attackDuration: 2.5
+    maxHealth: 500
+    damange: 40
+    attackRange: 12
+    respawnTime: 6
+    attackDuration: 1.5
     dealDamageTime: 0.3
     health: 100
     level: 0

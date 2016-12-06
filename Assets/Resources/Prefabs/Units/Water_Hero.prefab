@@ -584,12 +584,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2072b3e9c2f9934a8480829f77cffd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   objectData:
     moveSpeed: 12
     maxHealth: 300
     damange: 100
     attackRange: 20
-    respawnTime: 2
+    respawnTime: 6
     attackDuration: 0.5
     dealDamageTime: 0.2
     health: 0

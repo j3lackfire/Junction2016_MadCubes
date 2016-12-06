@@ -31,11 +31,11 @@ public class FireHero : BaseHero {
 
     protected override void ObjectAttack()
     {
-        timeToDealDamage = 0.3f;
+        //timeToDealDamage = 0.3f;
         attackCountUp += Time.deltaTime;
         if (attackCountUp >= timeToDealDamage)
         {
-            if (targetObject == null)
+            if (targetObject == null || IsTargetChanged())
             {
                 targetObject = objectManager.RequestTarget(this);
                 if (targetObject == null)
@@ -51,7 +51,7 @@ public class FireHero : BaseHero {
             if (timeToDealDamage != 999f)
             {
                 DealDamageToTarget();
-                timeToDealDamage += 0.05f;
+                timeToDealDamage += 0.025f;
             }
         }
         if (attackCountUp >= objectData.attackDuration)

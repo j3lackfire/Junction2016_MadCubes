@@ -18,7 +18,6 @@ public class ProjectileManager : BaseManager
     public BasicProjectile CreateProjectile(ProjectileType type, bool _isEnemy, int _damage, Vector3 _startPos, BaseObject _attacker, Vector3 _endPos, BaseObject _target)
     {
         BasicProjectile projectile = PrefabsManager.SpawnProjectile(type);
-        projectile = Instantiate(projectile);
         projectile.Init(type, _isEnemy, _damage);
         projectile.InitPosition(_startPos, _endPos);
         projectile.InitObjects(_attacker, _target);
