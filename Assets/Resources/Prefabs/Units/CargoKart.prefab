@@ -28,6 +28,7 @@ GameObject:
   - 4: {fileID: 411196}
   - 33: {fileID: 3380698}
   - 23: {fileID: 2323932}
+  - 114: {fileID: 11499742}
   m_Layer: 0
   m_Name: CargoKart
   m_TagString: Untagged
@@ -118,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fcab79e9b453974ca52a72d450c4c82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   objectData:
     moveSpeed: 1
     maxHealth: 20000
@@ -141,6 +143,19 @@ MonoBehaviour:
   isGameWin: 0
   isDead: 0
   cargoSpeed: 1
+--- !u!114 &11499742
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 163432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8436200d8220a44bb925144c63db07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentObject: {fileID: 0}
+  healthBar: {fileID: 0}
 --- !u!208 &20842192
 NavMeshObstacle:
   m_ObjectHideFlags: 1

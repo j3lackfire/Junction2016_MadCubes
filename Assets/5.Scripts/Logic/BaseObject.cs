@@ -6,13 +6,12 @@ public class BaseObject : PooledObject
 {
     //COMPONENTS
     protected NavMeshAgent navMeshAgent;
-    protected BaseRenderer objectRenderer;
+    protected ObjectRenderer objectRenderer;
     [SerializeField] //maybe read data from JSON later for easier configuration ?
     public ObjectData objectData = new ObjectData();
     //[SerializeField] //serialize field for easier debuggin, don't need now
     protected AnimatorWrapper animatorWrapper;
     protected Animator childAnimator;
-
     //MANAGERS
     //[SerializeField]
     protected ObjectManager objectManager;
@@ -67,6 +66,13 @@ public class BaseObject : PooledObject
         navMeshAgent.speed = objectData.moveSpeed;
         childAnimator = GetComponentInChildren<Animator>();
         animatorWrapper = new AnimatorWrapper(childAnimator);
+
+        if (objectRenderer == null)
+        {
+            objectRenderer = GetComponentInChildren<ObjectRenderer>();
+            objectRenderer.InitRenderer(this);
+        }
+        objectRenderer.UpdateHealthBar(1f);
     }
 
     //TODO: make this function read data externally
@@ -108,6 +114,7 @@ public class BaseObject : PooledObject
         }
         //update animator wrapper to make animation run correctly
         animatorWrapper.DoUpdate();
+        objectRenderer.DoUpdateRenderer();
     }
 
     //What should this object do when a state is changed ????
@@ -324,6 +331,9 @@ public class BaseObject : PooledObject
         if (objectData.health <= 0)
         {
             OnObjectDie();
+        } else
+        {
+            objectRenderer.UpdateHealthBar((float)objectData.health/ (float)objectData.maxHealth);
         }
     }
 

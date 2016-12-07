@@ -44,7 +44,7 @@ public class BasicProjectile : PooledObject {
         targetPosition = _targetPos;
         transform.position = startPosition;
         transform.LookAt(targetPosition);
-    }
+    } 
 
     public virtual void InitObjects(BaseObject _attacker, BaseObject _target)
     {
