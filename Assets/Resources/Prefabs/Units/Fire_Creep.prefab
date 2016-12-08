@@ -53,7 +53,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &425342
 Transform:
   m_ObjectHideFlags: 1
@@ -215,15 +215,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   objectData:
+    level: 1
     moveSpeed: 8
-    maxHealth: 30
-    damange: 12
+    baseMaxHealth: 30
+    baseDamage: 12
     attackRange: 8
     respawnTime: 0
     attackDuration: 1.5
     dealDamageTime: 0.5
+    maxHealth: 30
+    damange: 12
     health: 30
-    level: 1
     sight: 0
   isEnemy: 1
   objectState: 0

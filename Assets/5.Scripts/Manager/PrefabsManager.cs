@@ -31,8 +31,13 @@ public class PrefabsManager {
         //create a tempt list
         List<PooledObject> tempList = null;
         //try to get the list of said value from the pool
-        masterPool.TryGetValue(objectType, out tempList);
-        if (tempList == null)
+        if (masterPool.ContainsKey(objectType))
+        {
+            //tempList = masterPool.TryGetValue(objectType, out tempList);
+            tempList = masterPool[objectType];
+            objectPrefab = tempList[0];
+        }
+        else
         {
             //if we don't have that list yet, create it, and load the prefab.
             tempList = new List<PooledObject>();
@@ -40,15 +45,27 @@ public class PrefabsManager {
             objectPrefab = (Resources.Load(resourcePath + objectType) as GameObject).GetComponent<PooledObject>();
             //the first value of a list will always be the value.
             tempList.Add(objectPrefab);
-        } else
-        {
-            objectPrefab = tempList[0];
         }
+        
+        //if (tempList == null)
+        //{
+        //    //if we don't have that list yet, create it, and load the prefab.
+        //    tempList = new List<PooledObject>();
+        //    masterPool.Add(objectType, tempList);
+        //    objectPrefab = (Resources.Load(resourcePath + objectType) as GameObject).GetComponent<PooledObject>();
+        //    //the first value of a list will always be the value.
+        //    tempList.Add(objectPrefab);
+        //} else
+        //{
+        //    objectPrefab = tempList[0];
+        //}
+
         if (tempList.Count <= 1)
         {
             //if the pool is empty, we must instantiate a new variable
             returnObject = GameObject.Instantiate<PooledObject>(objectPrefab);
             returnObject.SetPool(tempList);
+            returnObject.SetFirstInit();
         } else
         {
             //0 is the prefab value.
@@ -84,7 +101,7 @@ public class PrefabsManager {
         return GetObjectFromPool(type.ToString(), corpseDataPath) as Corpse;
     }
 
-    public static BasicProjectile SpawnProjectile(ProjectileType projectileType)
+    public static BaseProjectile SpawnProjectile(ProjectileType projectileType)
     {
         if(projectileType == ProjectileType.Invalid)
         {
@@ -92,7 +109,7 @@ public class PrefabsManager {
             Debug.Break();
             return null;
         }
-        return GetObjectFromPool(projectileType.ToString(), projectileDataPath) as BasicProjectile;
+        return GetObjectFromPool(projectileType.ToString(), projectileDataPath) as BaseProjectile;
     }
 
     //TODO : recheck this function

@@ -17,4 +17,10 @@ public class WaterCreep : BaseUnit {
     {
         return CorpseType.Water_Creep_Corpse;
     }
+
+    protected override void DeadEffect()
+    {
+        base.DeadEffect();
+        Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
+    }
 }

@@ -230,14 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1aec93015d51e74489ebcd6489ba5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   projectileSpeed: 65
-  isEnemyTeam: 0
-  projectileType: 0
-  damage: 0
-  startPosition: {x: 0, y: 0, z: 0}
-  attackerObject: {fileID: 0}
-  targetPosition: {x: 0, y: 0, z: 0}
-  targetObject: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -11,11 +11,7 @@ public class CargoKart : BaseObject {
     private int currentTargetNodeIndex;
 
     public bool isGameWin;
-    public bool isDead;
-
-    [SerializeField]
-    private float cargoSpeed;
-
+    
     public override ObjectType GetObjectType()
     {
         return ObjectType.CargoKart;
@@ -27,12 +23,26 @@ public class CargoKart : BaseObject {
         currentTargetNodeIndex = 0;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
         isGameWin = false;
-        isDead = false;
+        PrepareComponent();
         UpdateStatsByLevel(1);
-    }	
+        objectState = ObjectState.Run;
+    }
+
+    protected override void PrepareComponent()
+    {
+        //childAnimator = GetComponentInChildren<Animator>();
+        //animatorWrapper = new AnimatorWrapper(childAnimator);
+        if (objectRenderer == null)
+        {
+            objectRenderer = GetComponentInChildren<ObjectRenderer>();
+            objectRenderer.InitRenderer(this);
+        }
+        objectRenderer.UpdateHealthBar(1f);
+
+    }
 
     public override void DoUpdate () {
-        if (!isGameWin && !isDead)
+        if (!isGameWin && objectState != ObjectState.Die)
         {
             MoveToTargetPosition();
         }
@@ -55,20 +65,9 @@ public class CargoKart : BaseObject {
         else
         {
             Vector3 oldPos = transform.position;
-            transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * cargoSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * objectData.moveSpeed);
+            //remove later.
             Directors.cameraController.FollowCargo(transform.position - oldPos);
-        }
-    }
-
-    protected override void ReduceHealth(int damage)
-    {
-        //Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
-        objectData.health -= damage;
-        if (objectData.health <= 0)
-        {
-            //Destroy(gameObject);
-            Directors.uiMaster.GameOver();
-            isDead = true;
         }
     }
 
@@ -100,5 +99,16 @@ public class CargoKart : BaseObject {
         currentTargetNode = targetPosList[currentTargetNodeIndex];
         Directors.enemyManager.spawnPointParent.transform.position = currentTargetNode.transform.position;
         transform.LookAt(currentTargetNode.transform.position);
+    }
+
+    public override void OnObjectDie()
+    {
+        SetState(ObjectState.Die);
+        DeadEffect();
+    }
+
+    public override CorpseType GetCorpseType()
+    {
+        return CorpseType.Water_Creep_Corpse;
     }
 }

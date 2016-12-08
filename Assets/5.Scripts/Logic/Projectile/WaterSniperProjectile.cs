@@ -2,7 +2,7 @@
 using System.Collections;
 
 //Don't know how to make it multishot
-public class WaterSniperProjectile : BasicProjectile {
+public class WaterSniperProjectile : BaseProjectile {
 
     //public override void Init(bool _isEnemy, int _damage, Vector3 _startPos, Vector3 _targetPos, BaseElementObject _targetObject, GameElement _bulletElement)
     //{

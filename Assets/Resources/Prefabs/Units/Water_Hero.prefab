@@ -663,15 +663,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   objectData:
+    level: 0
     moveSpeed: 12
-    maxHealth: 300
-    damange: 100
+    baseMaxHealth: 300
+    baseDamage: 125
     attackRange: 20
-    respawnTime: 6
+    respawnTime: 1
     attackDuration: 0.5
     dealDamageTime: 0.2
+    maxHealth: 300
+    damange: 100
     health: 0
-    level: 0
     sight: 0
   isEnemy: 0
   objectState: 0

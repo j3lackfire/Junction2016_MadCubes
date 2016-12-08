@@ -42,14 +42,13 @@ public class BaseObject : PooledObject
 
     public virtual void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
+        //for testing and easier debuging.
+        gameObject.name = GetObjectType().ToString() + "_" + id.ToString();
         isEnemy = isEnemyTeam;
         objectManager = _objectManager;
-        projectileManager = Directors.projectileManager;
-        cameraController = Directors.cameraController;
-        mouseController = Directors.mouseController;
-
+        OnFirstInit();
         PrepareComponent();
-
+        
         UpdateStatsByLevel(objectLevel);
         SetState(ObjectState.Idle);
         isDamageDeal = false;
@@ -57,7 +56,15 @@ public class BaseObject : PooledObject
         idleCountDown = GameConstant.idleCheckFrequency;
     }
 
-    protected void PrepareComponent()
+    protected override void OnFirstInit()
+    {
+        base.OnFirstInit();
+        projectileManager = Directors.projectileManager;
+        cameraController = Directors.cameraController;
+        mouseController = Directors.mouseController;
+    }
+
+    protected virtual void PrepareComponent()
     {
         if (navMeshAgent == null)
         {
@@ -80,8 +87,8 @@ public class BaseObject : PooledObject
     {
         objectData.level = level;
         objectData.sight = objectData.attackRange + 3f;
-        objectData.maxHealth = objectData.maxHealth + (int)(objectData.maxHealth * level * GameConstant.normalCreepHealthIncreasePerLevel);
-        objectData.damange = objectData.damange + (int)(objectData.damange * level * GameConstant.normalCreepDamageIncreasePerLevel);
+        objectData.maxHealth = objectData.baseMaxHealth+ (int)(objectData.baseMaxHealth * level * GameConstant.normalCreepDamageIncreasePerLevel);
+        objectData.damange = objectData.baseDamage+ (int)(objectData.baseDamage * level * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.health = objectData.maxHealth;
     }
 
@@ -128,7 +135,7 @@ public class BaseObject : PooledObject
             case ObjectState.Run:
             case ObjectState.Charge:
                 //need this one so the object will not just repeat the run animation while running
-                if (objectState != ObjectState.Run || objectState != ObjectState.Charge)
+                if (objectState != ObjectState.Run && objectState != ObjectState.Charge)
                 {
                     animatorWrapper.AddTriggerToQueue("EnterMovementAnimation");
                 }
@@ -328,13 +335,12 @@ public class BaseObject : PooledObject
     protected virtual void ReduceHealth(int damage)
     {
         objectData.health -= damage;
+        objectRenderer.UpdateHealthBar((float)objectData.health / (float)objectData.maxHealth);
         if (objectData.health <= 0)
         {
             OnObjectDie();
-        } else
-        {
-            objectRenderer.UpdateHealthBar((float)objectData.health/ (float)objectData.maxHealth);
-        }
+        } 
+        
     }
 
     public virtual void OnObjectDie()
@@ -347,26 +353,10 @@ public class BaseObject : PooledObject
 
     protected virtual void DeadEffect()
     {
-        //TODO optimize dead effect !!!!
-        //dead effect.
         for (int i = 0; i < 15; i++)
         {
             Corpse corpse = PrefabsManager.SpawnCorpse(GetCorpseType());
             corpse.Init(transform.position);
-
-            //GameObject corpse = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            //corpse.transform.position = gameObject.transform.position + (new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f)));
-            //corpse.transform.localScale = new Vector3(0.3333f, 0.3333f, 0.3333f);
-            //corpse.GetComponent<Renderer>().material = PrefabsManager.GetMaterialColor(GetObjectType());
-            //corpse.AddComponent<Rigidbody>();
-            //Destroy(corpse, Random.Range(2.5f, 3.5f));
-        }
-        //end dead effect
-
-        //TODO : remove this later
-        if (GetObjectType() == ObjectType.Water_Creep)
-        {
-            Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
         }
     }
 
@@ -376,7 +366,6 @@ public class BaseObject : PooledObject
         //Destroy(gameObject);
         ReturnToPool();
     }
-
     
 }
 

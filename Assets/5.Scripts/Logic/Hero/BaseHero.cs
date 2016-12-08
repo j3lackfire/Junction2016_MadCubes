@@ -48,6 +48,7 @@ public class BaseHero : BaseObject {
         //Make it way better.
         objectData.level++;
         UpdateStatsByLevel(objectData.level);
+        objectRenderer.UpdateHealthBar(1f);
     }
 
     public override void UpdateStatsByLevel(int level)

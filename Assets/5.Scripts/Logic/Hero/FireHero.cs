@@ -22,6 +22,11 @@ public class FireHero : BaseHero {
         return CorpseType.Fire_Creep_Corpse;
     }
 
+    protected override void PrepareComponent()
+    {
+        base.PrepareComponent();
+    }
+
     protected override void DealDamageToTarget()
     {
         projectileManager.CreateProjectile(GetProjectileType(), isEnemy, objectData.damange, transform.position, this, 

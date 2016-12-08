@@ -1,37 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicProjectile : PooledObject {
+public class BaseProjectile : PooledObject {
     //Manager
     protected ProjectileManager projectileManager;
     //Move speed of the projectile
     [SerializeField]
     protected float projectileSpeed;
     //is this really neccesary ?
-    [SerializeField]
+    //[SerializeField]
     protected bool isEnemyTeam;
 
-    [SerializeField]
+    //[SerializeField]
     protected ProjectileType projectileType;
 
-    [SerializeField]
+    //[SerializeField]
     protected int damage;
-    [SerializeField]
+    //[SerializeField]
     protected Vector3 startPosition;
-    [SerializeField]
+    //[SerializeField]
     protected BaseObject attackerObject;
-    [SerializeField]
+    //[SerializeField]
     protected Vector3 targetPosition;
-    [SerializeField]
+    //[SerializeField]
     protected BaseObject targetObject;
     protected long targetID;
 
     //is this bullet chase the target
     protected bool isChaseBullet;
 
+    protected override void OnFirstInit()
+    {
+        base.OnFirstInit();
+        projectileManager = Directors.projectileManager;
+    }
+
     public virtual void Init(ProjectileType _type, bool _isEnemyProjectile, int _damage)
     {
-        projectileManager = Directors.projectileManager;
+        OnFirstInit();
         projectileType = _type;
         isEnemyTeam = _isEnemyProjectile;
         damage = _damage;

@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &141514
 GameObject:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ GameObject:
   - 4: {fileID: 425342}
   - 195: {fileID: 19533170}
   - 65: {fileID: 6502018}
-  - 114: {fileID: 11490818}
+  - 114: {fileID: 11453328}
   m_Layer: 8
   m_Name: Water_Creep
   m_TagString: Enemy
@@ -254,6 +254,33 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11453328
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 141514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 213d42efda0e840419c011c0c2553f8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  objectData:
+    level: 0
+    moveSpeed: 8
+    baseMaxHealth: 200
+    baseDamage: 20
+    attackRange: 10
+    respawnTime: 0
+    attackDuration: 2.5
+    dealDamageTime: 0.5
+    maxHealth: 200
+    damange: 20
+    health: 0
+    sight: 0
+  isEnemy: 0
+  objectState: 0
 --- !u!114 &11483312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -266,31 +293,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 0}
---- !u!114 &11490818
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 141514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69fd8951faac8204baaa596da51a95c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  objectData:
-    moveSpeed: 8
-    maxHealth: 200
-    damange: 20
-    attackRange: 10
-    respawnTime: 0
-    attackDuration: 2.5
-    dealDamageTime: 0.5
-    health: 0
-    level: 0
-    sight: 0
-  isEnemy: 1
-  objectState: 0
 --- !u!195 &19533170
 NavMeshAgent:
   m_ObjectHideFlags: 1

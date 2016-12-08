@@ -14,6 +14,7 @@ public class EnemyManager : ObjectManager {
 
     public float summonRate;
     private float spawnCountDown = 1;
+
     public override void Init()
     {
         base.Init();
@@ -66,12 +67,6 @@ public class EnemyManager : ObjectManager {
         }
     }
 
-    public override void RemoveObject(BaseObject baseObject)
-    {
-        objectList.Remove(baseObject);
-    }
-
-    //TODO rewrote this function !!!
     public BaseObject SpawnUnit(ObjectType objectType)
     {
         BaseObject creep = PrefabsManager.SpawnUnit(objectType);
@@ -82,6 +77,11 @@ public class EnemyManager : ObjectManager {
         creep.ChargeAtObject(RequestTarget(creep));
         creep.transform.parent = transform;
         return creep;
+    }
+
+    public override void RemoveObject(BaseObject baseObject)
+    {
+        objectList.Remove(baseObject);
     }
 
     public override BaseObject RequestTarget(BaseObject baseObject)
@@ -112,6 +112,11 @@ public class EnemyManager : ObjectManager {
                 return PlayerManager.cargoKart;
             }
         }
+    }
+
+    public void UpdateSpawnPosition()
+    {
+
     }
 
 }
