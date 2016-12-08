@@ -24,7 +24,7 @@ public class ObjectData {
     //[HideInInspector]
     public int damange;
 
-    [HideInInspector]
+    //[HideInInspector]
     public int health;
     [HideInInspector]
     public float sight;

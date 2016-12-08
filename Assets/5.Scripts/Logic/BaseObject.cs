@@ -54,6 +54,7 @@ public class BaseObject : PooledObject
         isDamageDeal = false;
         objectChargeCountdown = GameConstant.objectChargeCountdownValue;
         idleCountDown = GameConstant.idleCheckFrequency;
+        healthRegenCountUp = 0f;
     }
 
     protected override void OnFirstInit()
@@ -120,6 +121,7 @@ public class BaseObject : PooledObject
                 break;
         }
         //update animator wrapper to make animation run correctly
+        RegenHealth();
         animatorWrapper.DoUpdate();
         objectRenderer.DoUpdateRenderer();
     }
@@ -328,6 +330,10 @@ public class BaseObject : PooledObject
     //Passing the attacker in to check detail
     public virtual void ReceiveDamage(int damage, BaseObject attacker = null)
     {
+        if (GetHealthRegenRate() > 0f)
+        {
+            healthRegenCountUp = - GameConstant.attackStopRegenTime * GetHealthRegenRate() * objectData.maxHealth / 100f;
+        }
         //Complex calculation here later if I want the game to get complex
         ReduceHealth(damage);
     }
@@ -335,7 +341,7 @@ public class BaseObject : PooledObject
     protected virtual void ReduceHealth(int damage)
     {
         objectData.health -= damage;
-        objectRenderer.UpdateHealthBar((float)objectData.health / (float)objectData.maxHealth);
+        objectRenderer.UpdateHealthBar();
         if (objectData.health <= 0)
         {
             OnObjectDie();
@@ -353,7 +359,7 @@ public class BaseObject : PooledObject
 
     protected virtual void DeadEffect()
     {
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 9; i++)
         {
             Corpse corpse = PrefabsManager.SpawnCorpse(GetCorpseType());
             corpse.Init(transform.position);
@@ -366,7 +372,29 @@ public class BaseObject : PooledObject
         //Destroy(gameObject);
         ReturnToPool();
     }
-    
+
+    private float healthRegenCountUp = 0f;
+
+    protected virtual void RegenHealth()
+    {
+        if (GetHealthRegenRate() <= 0 || objectState == ObjectState.Die || objectData.health >= objectData.maxHealth)
+        {
+            return;
+        }
+        healthRegenCountUp += Time.deltaTime * GetHealthRegenRate() * objectData.maxHealth / 100f;
+        if (healthRegenCountUp >= 1)
+        {
+            objectData.health = Mathf.Min((int)healthRegenCountUp + objectData.health, objectData.maxHealth);
+            healthRegenCountUp -= (int)healthRegenCountUp;
+            objectRenderer.UpdateHealthBar();
+        }
+    }
+
+    //percent of max health regen per second
+    //1 mean 1% of health every second
+    protected virtual float GetHealthRegenRate() {
+        return 0f;
+    }
 }
 
 public enum ObjectState

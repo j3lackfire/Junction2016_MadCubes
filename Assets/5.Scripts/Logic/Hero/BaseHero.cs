@@ -58,4 +58,10 @@ public class BaseHero : BaseObject {
         objectData.damange = objectData.damange + (int)(objectData.damange * level * 0.22f);
         objectData.health = objectData.maxHealth;
     }
+
+    protected override float GetHealthRegenRate()
+    {
+        return 1.25f;
+    }
+
 }

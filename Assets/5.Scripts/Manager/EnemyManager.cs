@@ -78,6 +78,10 @@ public class EnemyManager : ObjectManager {
 
     public BaseObject SpawnUnit(ObjectType objectType)
     {
+        if (objectList.Count >= GameConstant.enemySpawnCap)
+        {
+            return null;
+        }
         BaseObject creep = PrefabsManager.SpawnUnit(objectType);
         //set at random position, for now
         creep.transform.position = enemySpawnPos[Random.Range(0, enemySpawnPos.Count)].transform.position;

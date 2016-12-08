@@ -14,7 +14,7 @@ public class ObjectRenderer : MonoBehaviour {
     private float deltaR;
     private float deltaG;
     private float deltaB;
-    private float alpha = 0.7f; //125 alpha, I like it that way.
+    private float alpha = 0.7f;
 
     //private function
     private bool isHealthBarShow = true;
@@ -48,6 +48,11 @@ public class ObjectRenderer : MonoBehaviour {
     {
         //update the health bar rotation so that it stays in once place.
         healthBar.transform.rotation = Quaternion.Euler(new Vector3(0f, 180f, 0f));
+    }
+
+    public void UpdateHealthBar()
+    {
+        UpdateHealthBar((float)parentObject.objectData.health / (float)parentObject.objectData.maxHealth);
     }
 
     public void UpdateHealthBar(float healthPercent)

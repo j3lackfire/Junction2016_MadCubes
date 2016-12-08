@@ -30,6 +30,7 @@ public class CargoKart : BaseObject {
 
     protected override void PrepareComponent()
     {
+        cameraController = Directors.cameraController;
         if (objectRenderer == null)
         {
             objectRenderer = GetComponentInChildren<ObjectRenderer>();
@@ -43,6 +44,7 @@ public class CargoKart : BaseObject {
         {
             MoveToTargetPosition();
         }
+        RegenHealth();
     }
 
     private void MoveToTargetPosition()
@@ -101,11 +103,17 @@ public class CargoKart : BaseObject {
     {
         SetState(ObjectState.Die);
         objectRenderer.gameObject.SetActive(false);
+        cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         DeadEffect();
     }
 
     public override CorpseType GetCorpseType()
     {
         return CorpseType.Water_Creep_Corpse;
+    }
+
+    protected override float GetHealthRegenRate()
+    {
+        return 0.75f;
     }
 }

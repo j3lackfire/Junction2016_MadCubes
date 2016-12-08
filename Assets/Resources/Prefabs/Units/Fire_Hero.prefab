@@ -457,8 +457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8436200d8220a44bb925144c63db07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarColor: {r: 0.791, g: 0.134, b: 0.228, a: 0.7058824}
-  deadHealthBarColor: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 0.7058824}
+  healthBarColor: {r: 0.13725491, g: 0.7882353, b: 0.6509804, a: 0.7058824}
+  deadHealthBarColor: {r: 1, g: 0.16862746, b: 0.101960786, a: 0.7058824}
 --- !u!114 &11463516
 MonoBehaviour:
   m_ObjectHideFlags: 1
