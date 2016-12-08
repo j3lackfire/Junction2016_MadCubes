@@ -457,7 +457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8436200d8220a44bb925144c63db07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 0}
+  healthBarColor: {r: 0.791, g: 0.134, b: 0.228, a: 0.7058824}
+  deadHealthBarColor: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 0.7058824}
 --- !u!114 &11463516
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -476,7 +477,7 @@ MonoBehaviour:
     baseMaxHealth: 500
     baseDamage: 40
     attackRange: 12
-    respawnTime: 6
+    respawnTime: 1
     attackDuration: 1.5
     dealDamageTime: 0.3
     maxHealth: 500

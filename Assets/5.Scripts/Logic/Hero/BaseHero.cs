@@ -33,7 +33,7 @@ public class BaseHero : BaseObject {
             //hero is alive.
             //this is very buggy, I don't know why
             //navMeshAgent.Move(PlayerManager.cargoKart.transform.position);
-            transform.position = PlayerManager.cargoKart.transform.position + new Vector3(Random.Range(-2f,2f), 0f, Random.Range(-2f, 2f));
+            transform.position = Directors.playerManager.cargoKart.transform.position + new Vector3(Random.Range(-2f,2f), 0f, Random.Range(-2f, 2f));
             childAnimator.gameObject.SetActive(true);
             SetState(ObjectState.Idle);
             OnHeroRessurect();

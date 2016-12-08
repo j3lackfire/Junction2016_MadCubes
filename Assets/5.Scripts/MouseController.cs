@@ -32,8 +32,7 @@ public class MouseController : BaseManager
     {
         
         //Click
-        if (Input.GetMouseButtonDown(0)
-            && !EventSystem.current.IsPointerOverGameObject()) //not clicking on UI
+        if (Input.GetMouseButtonDown(0))
         {
             //Create a ray
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -65,8 +64,7 @@ public class MouseController : BaseManager
         else
         {
             //Right click
-            if (Input.GetMouseButtonDown(1)
-                && !EventSystem.current.IsPointerOverGameObject()) //not clicking on UI
+            if (Input.GetMouseButtonDown(1))
             {
                 //Create a ray
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);

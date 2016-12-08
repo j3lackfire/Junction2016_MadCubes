@@ -30,15 +30,12 @@ public class CargoKart : BaseObject {
 
     protected override void PrepareComponent()
     {
-        //childAnimator = GetComponentInChildren<Animator>();
-        //animatorWrapper = new AnimatorWrapper(childAnimator);
         if (objectRenderer == null)
         {
             objectRenderer = GetComponentInChildren<ObjectRenderer>();
             objectRenderer.InitRenderer(this);
         }
         objectRenderer.UpdateHealthBar(1f);
-
     }
 
     public override void DoUpdate () {
@@ -97,13 +94,13 @@ public class CargoKart : BaseObject {
     {
         currentTargetNodeIndex++;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
-        Directors.enemyManager.spawnPointParent.transform.position = currentTargetNode.transform.position;
         transform.LookAt(currentTargetNode.transform.position);
     }
 
     public override void OnObjectDie()
     {
         SetState(ObjectState.Die);
+        objectRenderer.gameObject.SetActive(false);
         DeadEffect();
     }
 

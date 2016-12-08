@@ -22,8 +22,8 @@ public class BaseUnit : BaseObject {
         objectChargeCountdown--;
         if (objectChargeCountdown <= 0)
         {
-            if (isEnemy && targetObject == PlayerManager.cargoKart &&
-                objectManager.RequestTarget(this) != PlayerManager.cargoKart)
+            if (isEnemy && targetObject.GetObjectType() == ObjectType.CargoKart &&
+                objectManager.RequestTarget(this).GetObjectType() != ObjectType.CargoKart)
             {
                 ChargeAtObject(objectManager.RequestTarget(this));
             }

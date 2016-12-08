@@ -218,7 +218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8436200d8220a44bb925144c63db07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarColor: {r: 1, g: 0, b: 0, a: 1}
+  healthBarColor: {r: 0.07058824, g: 1, b: 0.2509804, a: 0.7058824}
+  deadHealthBarColor: {r: 1, g: 0.172, b: 0.103, a: 0.7058824}
 --- !u!208 &20842192
 NavMeshObstacle:
   m_ObjectHideFlags: 1

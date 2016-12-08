@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class PlayerManager : ObjectManager {
 
     public List<BaseHero> heroList = new List<BaseHero>();
-    public static CargoKart cargoKart;
+    public CargoKart cargoKart;
 
     public override void Init()
     {

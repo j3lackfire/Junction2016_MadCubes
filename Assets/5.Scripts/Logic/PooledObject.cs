@@ -29,6 +29,11 @@ public class PooledObject : MonoBehaviour {
     //It makes a little more sense to call it externally.
     protected void ReturnToPool()
     {
+        if (myPool == null)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         myPool.Add(this);
         gameObject.SetActive(false);
     }

@@ -30,6 +30,7 @@ public class WaterHero : BaseHero {
     {
         if (targetObject != null)
         {
+            int numberOfEnemyHit = 0;
             Vector3 bulletEndPos = transform.position + (targetObject.transform.position - transform.position).normalized * 75f;
             projectileManager.CreateProjectile(ProjectileType.Water_Hero_Laser, false, objectData.damange, transform.position , this, bulletEndPos, targetObject);
             testRay = new Ray(transform.position, targetObject.transform.position - transform.position);
@@ -43,10 +44,11 @@ public class WaterHero : BaseHero {
                     if (hit.isEnemy)
                     {
                         hit.ReceiveDamage(objectData.damange);
+                        numberOfEnemyHit++;
                     }
                 }
             }
-            if (hitObject.Length >= 4)
+            if (numberOfEnemyHit >= 3)
             {
                 Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
             }

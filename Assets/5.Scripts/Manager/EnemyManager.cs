@@ -21,6 +21,12 @@ public class EnemyManager : ObjectManager {
         spawnCountDown = 1;
         levelCountDown = GameConstant.increaseSpawnTime;
         summonRate = GameConstant.initialSpawnRate;
+        //todo remove later
+        objectList.AddRange(FindObjectsOfType<BaseUnit>());
+        for (int i = 0; i < objectList.Count; i ++)
+        {
+            objectList[i].Init(this, true, 1);
+        }
     }
 
     public override void DoUpdate()
@@ -64,6 +70,9 @@ public class EnemyManager : ObjectManager {
                 summonRate -= GameConstant.spawnRateIncreaseValue;
             }
             currentSpawnLevel++;
+
+            //need to rework this thing to make it better :/
+            UpdateSpawnPosition();
         }
     }
 
@@ -98,10 +107,10 @@ public class EnemyManager : ObjectManager {
                 distance = (Directors.playerManager.heroList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
-        float distanceToCargo = (PlayerManager.cargoKart.transform.position - baseObject.transform.position).magnitude;
+        float distanceToCargo = (Directors.playerManager.cargoKart.transform.position - baseObject.transform.position).magnitude;
         if (distanceToCargo < distance)
         {
-            return PlayerManager.cargoKart;
+            return Directors.playerManager.cargoKart;
         } else
         {
             if (distance < 20f)
@@ -109,14 +118,25 @@ public class EnemyManager : ObjectManager {
                 return returnObject;
             } else
             {
-                return PlayerManager.cargoKart;
+                return Directors.playerManager.cargoKart;
             }
         }
     }
 
     public void UpdateSpawnPosition()
     {
-
+        spawnPointParent.transform.position = Directors.playerManager.cargoKart.transform.position;
+        float sumRandom = 60f;
+        float randomX;
+        float randomZ;
+        for (int i = 0; i < enemySpawnPos.Count; i ++)
+        {
+            randomX = Random.Range(1f, sumRandom * 0.98f);
+            randomZ = sumRandom - randomX;
+            randomX = Random.Range(0, 2) == 0 ? -randomX : randomX;
+            randomZ = Random.Range(0, 2) == 0 ? -randomZ : randomZ;
+            enemySpawnPos[i].transform.localPosition = new Vector3(randomX, 0f, randomZ);
+        }
     }
 
 }
