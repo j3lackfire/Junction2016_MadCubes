@@ -11,7 +11,7 @@ public class MouseController : BaseManager
     public GameObject attackedCircle;
 
     [SerializeField]
-    public BaseHero currentlySelectedHero;
+    public BaseObject currentlySelectedHero;
 
     private Ray ray;
     private RaycastHit hit;
@@ -44,10 +44,7 @@ public class MouseController : BaseManager
                 {
                     case "Hero":
                         currentlySelectedHero = hit.transform.GetComponent<BaseHero>();
-                        //hero.SetMovePosition(hit.point);
-                        hightLightCircle.SetActive(true);
-                        hightLightCircle.transform.parent = currentlySelectedHero.transform;
-                        hightLightCircle.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+                        SelectObject(currentlySelectedHero);
                         break;
                     case "Enemy":
                     case "Ground":
@@ -110,20 +107,20 @@ public class MouseController : BaseManager
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            currentlySelectedHero = Directors.playerManager.heroList[0];
-            //hero.SetMovePosition(hit.point);
-            hightLightCircle.SetActive(true);
-            hightLightCircle.transform.parent = currentlySelectedHero.transform;
-            hightLightCircle.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+            SelectObject(Directors.playerManager.heroList[0]);
         }
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            currentlySelectedHero = Directors.playerManager.heroList[1];
-            //hero.SetMovePosition(hit.point);
-            hightLightCircle.SetActive(true);
-            hightLightCircle.transform.parent = currentlySelectedHero.transform;
-            hightLightCircle.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+            SelectObject(Directors.playerManager.heroList[1]);
         }
+    }
+
+    private void SelectObject(BaseObject baseObject)
+    {
+        currentlySelectedHero = baseObject;
+        hightLightCircle.SetActive(true);
+        hightLightCircle.transform.parent = currentlySelectedHero.transform;
+        hightLightCircle.transform.localPosition = new Vector3(0f, 0.12f, 0f);
     }
 
     private void SetMovementMark(Vector3 position)
