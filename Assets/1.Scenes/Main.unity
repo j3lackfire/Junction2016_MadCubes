@@ -291,6 +291,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 415610, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 114
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
   m_IsPrefabParent: 0
@@ -388,7 +392,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 425342, guid: 78b7867701102724f9d886ddab2b8a4e, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 4.276
+      value: 2.83
       objectReference: {fileID: 0}
     - target: {fileID: 425342, guid: 78b7867701102724f9d886ddab2b8a4e, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2689,6 +2693,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04023158dbe248b4c8c52622040e91dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  managersList: []
+  cameraController: {fileID: 0}
+  mouseController: {fileID: 0}
+  playerManager: {fileID: 0}
+  enemyManager: {fileID: 0}
+  projectileManager: {fileID: 0}
 --- !u!1001 &1667540570
 Prefab:
   m_ObjectHideFlags: 0
@@ -2789,6 +2799,18 @@ Prefab:
     - target: {fileID: 410442, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 180916, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504436, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 19557396, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
+      propertyPath: m_AutoRepath
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}

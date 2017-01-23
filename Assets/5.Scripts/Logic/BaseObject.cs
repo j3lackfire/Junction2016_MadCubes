@@ -132,6 +132,14 @@ public class BaseObject : PooledObject
         switch (state)
         {
             case ObjectState.Idle:
+                //Hot fix, so that when the hero respawn, he will not move to his previous position.
+                //Is this one a hot fix or a neccessary logic step ????
+                navMeshAgent.Stop();
+                navMeshAgent.SetDestination(transform.position);
+
+                //Another hot fix, to fix the wrong rotation of object when finishing an animation
+                objectRenderer.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
                 animatorWrapper.AddTriggerToQueue("EnterIdleAnimation");
                 break;
             case ObjectState.Run:
