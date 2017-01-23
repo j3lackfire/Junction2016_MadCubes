@@ -80,7 +80,7 @@ public class FireHero : BaseHero {
     //is there a way to remove ienumerator because it doesn't match my DoUpdate style very good :/
     private IEnumerator MakeItRain()
     {
-        List<BaseObject> enemyList = Directors.enemyManager.objectList;
+        List<BaseObject> enemyList = Directors.instance.enemyManager.objectList;
         for (int i = 0; i < enemyList.Count; i ++)
         {
             if (enemyList[i] != null && Ultilities.GetDistanceBetween(gameObject, enemyList[i].gameObject) <= objectData.attackRange * 2f)

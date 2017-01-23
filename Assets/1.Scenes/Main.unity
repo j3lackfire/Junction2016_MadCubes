@@ -686,7 +686,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroList: []
-  cargoKart: {fileID: 0}
 --- !u!1001 &372280756
 Prefab:
   m_ObjectHideFlags: 0
@@ -1411,8 +1410,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 1204992168}
   - 212: {fileID: 1204992169}
+  - 114: {fileID: 1204992170}
   m_Layer: 0
-  m_Name: SelectedCircle
+  m_Name: HightLightCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1425,12 +1425,12 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1204992167}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
-  m_LocalScale: {x: 1.95, y: 1.95, z: 1.95}
+  m_LocalPosition: {x: 5.24, y: 0.2, z: 0}
+  m_LocalScale: {x: 1.95, y: 1.9500002, z: 1.9500002}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 1767646844}
-  m_RootOrder: 2
+  m_Father: {fileID: 2144276952}
+  m_RootOrder: 0
 --- !u!212 &1204992169
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1458,9 +1458,22 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 75c3ec07729412542b0d59e6957af6eb, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!114 &1204992170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1204992167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3276ead6e1520e48a940187929283bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotatingSpeed: 6
+  targetGameObject: {fileID: 0}
 --- !u!1 &1243963423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1760,7 +1773,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 2144276952}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!23 &1446272400
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2975,6 +2988,14 @@ Prefab:
       propertyPath: targetPosList.Array.data[4]
       value: 
       objectReference: {fileID: 1561333058}
+    - target: {fileID: 11435186, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: objectData.baseMaxHealth
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435186, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: objectData.maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
   m_IsPrefabParent: 0
@@ -3393,7 +3414,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 2144276952}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!23 &2069811133
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3500,6 +3521,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 1204992168}
   - {fileID: 1446272399}
   - {fileID: 2069811132}
   m_Father: {fileID: 1634255685}
@@ -3515,7 +3537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b562615e322f46d429336f3e5945dda7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hightLightCircle: {fileID: 1204992167}
+  hightLightCircle: {fileID: 1204992170}
   movementCircle: {fileID: 1446272398}
   attackedCircle: {fileID: 2069811131}
   currentlySelectedHero: {fileID: 0}

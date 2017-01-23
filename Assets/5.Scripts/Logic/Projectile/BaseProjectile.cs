@@ -32,7 +32,7 @@ public class BaseProjectile : PooledObject {
     protected override void OnFirstInit()
     {
         base.OnFirstInit();
-        projectileManager = Directors.projectileManager;
+        projectileManager = Directors.instance.projectileManager;
     }
 
     public virtual void Init(ProjectileType _type, bool _isEnemyProjectile, int _damage)

@@ -30,7 +30,7 @@ public class CargoKart : BaseObject {
 
     protected override void PrepareComponent()
     {
-        cameraController = Directors.cameraController;
+        cameraController = Directors.instance.cameraController;
         if (objectRenderer == null)
         {
             objectRenderer = GetComponentInChildren<ObjectRenderer>();
@@ -66,7 +66,7 @@ public class CargoKart : BaseObject {
             Vector3 oldPos = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * objectData.moveSpeed);
             //remove later.
-            Directors.cameraController.FollowCargo(transform.position - oldPos);
+            cameraController.FollowCargo(transform.position - oldPos);
         }
     }
 
@@ -105,6 +105,8 @@ public class CargoKart : BaseObject {
         objectRenderer.gameObject.SetActive(false);
         cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         DeadEffect();
+        Directors.instance.EndBattle();
+        Debug.Log("<color=red>Battle state  </color>" + Directors.instance.GetBattleState());
     }
 
     public override CorpseType GetCorpseType()
@@ -116,4 +118,6 @@ public class CargoKart : BaseObject {
     {
         return 0.75f;
     }
+
+    public override bool AutoHideHealthBar() { return false; }
 }

@@ -3,26 +3,65 @@ using System.Collections.Generic;
 
 public class Directors : MonoBehaviour {
 
-    public static List<BaseManager> managersList = new List<BaseManager>();
-
-    public static CameraController cameraController;
-    public static MouseController mouseController;
-
-    public static PlayerManager playerManager;
-    public static EnemyManager enemyManager;
-
-    public static ProjectileManager projectileManager;
-
-    void Awake()
+    private static Directors _instance;
+    public static Directors instance
     {
+        get { return _instance; }
+        private set { _instance = value; }
+    }
+
+    public List<BaseManager> managersList = new List<BaseManager>();
+
+    public CameraController cameraController;
+    public MouseController mouseController;
+
+    public PlayerManager playerManager;
+    public EnemyManager enemyManager;
+
+    public ProjectileManager projectileManager;
+
+    private BattleState battleState;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = FindObjectOfType<Directors>();
+        } else
+        {
+            if (instance.gameObject == null)
+            {
+                instance = FindObjectOfType<Directors>();
+            } else
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+        } 
+        DontDestroyOnLoad(this.gameObject);
+
+        battleState = BattleState.Prepare;
         PrefabsManager.ClearPool();
         PrepareManagers();
         InitManagers();
     }
 
-    void Update()
+    private void Update()
     {
         UpdateManagers();
+    }
+
+    public BattleState GetBattleState() { return battleState; }
+
+    public void StartBattle()
+    {
+        battleState = BattleState.Battling;
+        Debug.Log("Start battle !!! " + battleState);
+    }
+
+    public void EndBattle()
+    {
+        battleState = BattleState.Finish;
     }
 
     private void PrepareManagers()
@@ -87,4 +126,12 @@ public class Directors : MonoBehaviour {
         }
     }
 
+}
+
+public enum BattleState
+{
+    Invalid = -1,
+    Prepare = 0,
+    Battling = 1,
+    Finish = 2
 }

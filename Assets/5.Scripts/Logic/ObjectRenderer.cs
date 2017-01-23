@@ -10,6 +10,8 @@ public class ObjectRenderer : MonoBehaviour {
     [SerializeField]
     protected Color deadHealthBarColor = new Color(1f, 0f, 0f, 0.7f);
 
+    public bool autoHideHealthBar = false;
+
     private Color tempColor;
     private float deltaR;
     private float deltaG;
@@ -36,7 +38,12 @@ public class ObjectRenderer : MonoBehaviour {
         deltaR = deadHealthBarColor.r - healthBarColor.r;
         deltaG = deadHealthBarColor.g - healthBarColor.g;
         deltaB = deadHealthBarColor.b - healthBarColor.b;
-        HideHealthBar();
+        //TODO : this might need re structure because this is bad. Child object called function straight from parents:/
+        autoHideHealthBar = _parentObject.AutoHideHealthBar();
+        if (autoHideHealthBar)
+        {
+            HideHealthBar();
+        }
     }
 
     public void SetHealthBarColor(Color _color)
@@ -57,7 +64,7 @@ public class ObjectRenderer : MonoBehaviour {
 
     public void UpdateHealthBar(float healthPercent)
     {
-        if (healthPercent == 1)
+        if (healthPercent == 1 && autoHideHealthBar)
         {
             HideHealthBar();
         } else

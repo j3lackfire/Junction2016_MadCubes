@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class MouseController : BaseManager
 {
 
-    public GameObject hightLightCircle;
+    public HightLightCircle hightLightCircle;
     public GameObject movementCircle;
     public GameObject attackedCircle;
 
@@ -23,14 +23,13 @@ public class MouseController : BaseManager
         //8 = Ground (for movement)
         //9 = Objects
         hitLayer = 1 << 8 | 1 <<  9;
-        hightLightCircle.SetActive(false);
+        hightLightCircle.Init();
         movementCircle.SetActive(false);
         attackedCircle.SetActive(false);
     }
 
     public override void DoUpdate()
     {
-        
         //Click
         if (Input.GetMouseButtonDown(0))
         {
@@ -100,6 +99,7 @@ public class MouseController : BaseManager
             }
         }
         CheckKeyboardInput();
+        hightLightCircle.DoUpdate();
     }
 
     //TODO : Re check this function
@@ -107,20 +107,27 @@ public class MouseController : BaseManager
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            SelectObject(Directors.playerManager.heroList[0]);
+            SelectObject(Directors.instance.playerManager.heroList[0]);
         }
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            SelectObject(Directors.playerManager.heroList[1]);
+            SelectObject(Directors.instance.playerManager.heroList[1]);
         }
     }
 
     private void SelectObject(BaseObject baseObject)
     {
         currentlySelectedHero = baseObject;
-        hightLightCircle.SetActive(true);
-        hightLightCircle.transform.parent = currentlySelectedHero.transform;
-        hightLightCircle.transform.localPosition = new Vector3(0f, 0.12f, 0f);
+        hightLightCircle.SetTargetGameObject(baseObject.gameObject);
+    }
+
+    public void DeselectObject(BaseObject baseObject)
+    {
+        if (baseObject == currentlySelectedHero)
+        {
+            currentlySelectedHero = null;
+            hightLightCircle.SetTargetGameObject(null);
+        }
     }
 
     private void SetMovementMark(Vector3 position)

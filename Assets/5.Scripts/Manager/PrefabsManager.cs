@@ -75,7 +75,7 @@ public class PrefabsManager {
         }
         returnObject.id = objectCounts;
         objectCounts++;
-        returnObject.transform.parent = Directors.mouseController.transform;
+        returnObject.transform.parent = Directors.instance.mouseController.transform;
         return returnObject;
     }
 

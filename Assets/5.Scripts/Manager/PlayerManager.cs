@@ -4,24 +4,28 @@ using System.Collections.Generic;
 public class PlayerManager : ObjectManager {
 
     public List<BaseHero> heroList = new List<BaseHero>();
-    public CargoKart cargoKart;
+    private CargoKart cargoKart;
 
     public override void Init()
     {
         base.Init();
-        if (cargoKart == null)
+        CargoKart tempCargoKart = FindObjectOfType<CargoKart>();
+        if (cargoKart != null)
         {
-            cargoKart = FindObjectOfType<CargoKart>();
+            Destroy(cargoKart.gameObject);
         }
-
+        cargoKart = tempCargoKart;
         cargoKart.Init(this, false, 1);
 
+        heroList = new List<BaseHero>();
         heroList.AddRange(FindObjectsOfType<BaseHero>());
         for (int i = 0; i < heroList.Count; i++)
         {
             //default level is 1
             heroList[i].Init(this, false, 1);
         }
+        Directors.instance.StartBattle();
+        Debug.Log("<color=green>Battle state  </color>" + Directors.instance.GetBattleState());
     }
 
     public override void DoUpdate()
@@ -34,17 +38,19 @@ public class PlayerManager : ObjectManager {
         cargoKart.DoUpdate();
     }
 
+    public CargoKart GetCargoKart() { return cargoKart; }
+
     public override BaseObject RequestTarget(BaseObject baseObject)
     {
         BaseObject returnObject = null;
         float distance = 999f;
-        for (int i = 0; i < Directors.enemyManager.objectList.Count; i++)
+        for (int i = 0; i < Directors.instance.enemyManager.objectList.Count; i++)
         {
-            if ((Directors.enemyManager.objectList[i].transform.position
+            if ((Directors.instance.enemyManager.objectList[i].transform.position
                 - baseObject.transform.position).magnitude < distance)
             {
-                returnObject = Directors.enemyManager.objectList[i];
-                distance = (Directors.enemyManager.objectList[i].transform.position - baseObject.transform.position).magnitude;
+                returnObject = Directors.instance.enemyManager.objectList[i];
+                distance = (Directors.instance.enemyManager.objectList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
         if (distance >= baseObject.objectData.attackRange + baseObject.objectData.sight)

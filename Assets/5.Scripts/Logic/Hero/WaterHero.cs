@@ -50,7 +50,7 @@ public class WaterHero : BaseHero {
             }
             if (numberOfEnemyHit >= 3)
             {
-                Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
+                cameraController.ScreenShake(ScreenShakeMagnitude.Small);
             }
         }
     }
@@ -63,7 +63,7 @@ public class WaterHero : BaseHero {
 
     IEnumerator MakeItRain()
     {
-        List<BaseObject> enemyList = Directors.enemyManager.objectList;
+        List<BaseObject> enemyList = Directors.instance.enemyManager.objectList;
         for (int i = 0; i < enemyList.Count; i++)
         {
             if (enemyList[i] != null && (enemyList[i].objectData.attackRange >= 10))

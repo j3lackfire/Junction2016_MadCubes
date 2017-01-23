@@ -32,12 +32,23 @@ public class EnemyManager : ObjectManager {
     public override void DoUpdate()
     {
         base.DoUpdate();
+        switch (Directors.instance.GetBattleState())
+        {
+            case BattleState.Battling:
+                CheckSpawnUnit();
+                CheckIncreaseLevel();
+                break;
+            case BattleState.Finish:
+            case BattleState.Prepare:
+                //Debug.Log("<color=1278ba>~~~state </color>" + Directors.instance.GetBattleState());
+                break;
+            default:
+                break;
+        }
         for (int i = 0; i < objectList.Count; i++)
         {
             objectList[i].DoUpdate();
         }
-        CheckSpawnUnit();
-        CheckIncreaseLevel();
     }
 
     private void CheckSpawnUnit()
@@ -69,7 +80,7 @@ public class EnemyManager : ObjectManager {
             {
                 summonRate -= GameConstant.spawnRateIncreaseValue;
             }
-            currentSpawnLevel++;
+            //currentSpawnLevel++;
 
             //need to rework this thing to make it better :/
             UpdateSpawnPosition();
@@ -101,20 +112,26 @@ public class EnemyManager : ObjectManager {
     {
         BaseObject returnObject = null;
         float distance = 999f;
-        for (int i = 0; i < Directors.playerManager.heroList.Count; i ++)
+        List<BaseHero> heroList = Directors.instance.playerManager.heroList;
+        for (int i = 0; i < heroList.Count; i ++)
         {
-            if (((Directors.playerManager.heroList[i].transform.position
+            if (((heroList[i].transform.position
                 - baseObject.transform.position).magnitude < distance) 
-                && Directors.playerManager.heroList[i].objectState != ObjectState.Die)
+                && heroList[i].objectState != ObjectState.Die)
             {
-                returnObject = Directors.playerManager.heroList[i];
-                distance = (Directors.playerManager.heroList[i].transform.position - baseObject.transform.position).magnitude;
+                returnObject = heroList[i];
+                distance = (heroList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
-        float distanceToCargo = (Directors.playerManager.cargoKart.transform.position - baseObject.transform.position).magnitude;
+        BaseObject cargo = Directors.instance.playerManager.GetCargoKart();
+        if (cargo == null || cargo.objectState == ObjectState.Die)
+        {
+            return returnObject;
+        }
+        float distanceToCargo = (cargo.transform.position - baseObject.transform.position).magnitude;
         if (distanceToCargo < distance)
         {
-            return Directors.playerManager.cargoKart;
+            return cargo;
         } else
         {
             if (distance < 20f)
@@ -122,14 +139,14 @@ public class EnemyManager : ObjectManager {
                 return returnObject;
             } else
             {
-                return Directors.playerManager.cargoKart;
+                return cargo;
             }
         }
     }
 
     public void UpdateSpawnPosition()
     {
-        spawnPointParent.transform.position = Directors.playerManager.cargoKart.transform.position;
+        spawnPointParent.transform.position = Directors.instance.playerManager.GetCargoKart().transform.position;
         float sumRandom = 60f;
         float randomX;
         float randomZ;
@@ -143,4 +160,4 @@ public class EnemyManager : ObjectManager {
         }
     }
 
-}
+} 

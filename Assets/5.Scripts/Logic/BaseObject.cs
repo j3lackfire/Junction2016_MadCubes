@@ -60,9 +60,9 @@ public class BaseObject : PooledObject
     protected override void OnFirstInit()
     {
         base.OnFirstInit();
-        projectileManager = Directors.projectileManager;
-        cameraController = Directors.cameraController;
-        mouseController = Directors.mouseController;
+        projectileManager = Directors.instance.projectileManager;
+        cameraController = Directors.instance.cameraController;
+        mouseController = Directors.instance.mouseController;
     }
 
     protected virtual void PrepareComponent()
@@ -309,7 +309,7 @@ public class BaseObject : PooledObject
         isDamageDeal = false;
         //The last check -> if enemy is attacking the cargo, while the hero is close, he should focus on the
         //hero instead. -> Might change later
-        if (targetObject != null && targetObject.objectState != ObjectState.Die && !IsTargetChanged() && IsTargetInRange() && !isEnemy)
+        if (targetObject != null && targetObject.objectState != ObjectState.Die && !IsTargetChanged() && IsTargetInRange())
         {
             StartAttackTarget();
         }
@@ -373,6 +373,7 @@ public class BaseObject : PooledObject
         ReturnToPool();
     }
 
+    //temp variable
     private float healthRegenCountUp = 0f;
 
     protected virtual void RegenHealth()
@@ -395,6 +396,9 @@ public class BaseObject : PooledObject
     protected virtual float GetHealthRegenRate() {
         return 0f;
     }
+
+    //tobe called by the renderer function. Hero will have this function off.
+    public virtual bool AutoHideHealthBar() { return true; }
 }
 
 public enum ObjectState

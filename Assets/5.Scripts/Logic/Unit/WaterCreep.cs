@@ -21,6 +21,6 @@ public class WaterCreep : BaseUnit {
     protected override void DeadEffect()
     {
         base.DeadEffect();
-        Directors.cameraController.ScreenShake(ScreenShakeMagnitude.Small);
+        cameraController.ScreenShake(ScreenShakeMagnitude.Small);
     }
 }

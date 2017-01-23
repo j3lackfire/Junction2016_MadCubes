@@ -5,6 +5,30 @@ using System.Collections;
 public class BaseHero : BaseObject {
     //Is enemy = false ???
     protected float deadCountDown;
+    protected float maxDistantToCargo = 25f;
+
+    //private object for calculating
+    private CargoKart cargoKart;
+
+    public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
+    {
+        base.Init(_objectManager, isEnemyTeam, objectLevel);
+        cargoKart = Directors.instance.playerManager.GetCargoKart();
+    }
+
+    public override void DoUpdate()
+    {
+        base.DoUpdate();
+        if (objectState != ObjectState.Die && GetDistanceToCargo() >= maxDistantToCargo)
+        {
+            ReceiveDamage(9999, null);
+        }
+    }
+
+    private float GetDistanceToCargo()
+    {
+        return (transform.position - cargoKart.transform.position).magnitude;
+    }
 
     //hero should have skill, shouldn't he ???
     public virtual void ActiveSkill() { }
@@ -13,11 +37,7 @@ public class BaseHero : BaseObject {
     {
         //Make mouse controller don't select this unit anymore
         //TODO make this less messy
-        if (mouseController.currentlySelectedHero == this)
-        {
-            mouseController.currentlySelectedHero = null;
-            mouseController.hightLightCircle.transform.gameObject.SetActive(false);
-        }
+        mouseController.DeselectObject(this);
         cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         childAnimator.gameObject.SetActive(false);
         deadCountDown = objectData.respawnTime;
@@ -33,7 +53,7 @@ public class BaseHero : BaseObject {
             //hero is alive.
             //this is very buggy, I don't know why
             //navMeshAgent.Move(PlayerManager.cargoKart.transform.position);
-            transform.position = Directors.playerManager.cargoKart.transform.position + new Vector3(Random.Range(-2f,2f), 0f, Random.Range(-2f, 2f));
+            transform.position = Directors.instance.playerManager.GetCargoKart().transform.position + new Vector3(Random.Range(-2f,2f), 0f, Random.Range(-2f, 2f));
             childAnimator.gameObject.SetActive(true);
             SetState(ObjectState.Idle);
             OnHeroRessurect();
@@ -64,4 +84,5 @@ public class BaseHero : BaseObject {
         return 1.25f;
     }
 
+    public override bool AutoHideHealthBar() { return false; }
 }
