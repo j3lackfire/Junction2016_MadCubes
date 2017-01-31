@@ -5,7 +5,7 @@ using System.Collections;
 public class BaseHero : BaseObject {
     //Is enemy = false ???
     protected float deadCountDown;
-    protected float maxDistantToCargo = 25f;
+    protected float maxDistantToCargo =25;
 
     //private object for calculating
     private CargoKart cargoKart;
@@ -20,15 +20,36 @@ public class BaseHero : BaseObject {
     public override void DoUpdate()
     {
         base.DoUpdate();
-        if (objectState != ObjectState.Die && GetDistanceToCargo() >= maxDistantToCargo)
+        ValidateHeroDistanceToCargo();
+        
+    }
+
+    //private cached value, only used for the function beloew.
+    private int validateHeroDistanceCheckCount = 20;
+    //Only call this functinon every 10 or something frame to save performance.
+    //Check if the hero is too far away from the cargo or not. If so, move him back
+    private void ValidateHeroDistanceToCargo()
+    {
+        validateHeroDistanceCheckCount--;
+        if (validateHeroDistanceCheckCount <= 0 
+            && objectState != ObjectState.Die 
+            && GetDistanceToCargo() >= maxDistantToCargo)
         {
-            ReceiveDamage(9999, null);
+            OnHeroVeryFarFromCargo();
+            validateHeroDistanceCheckCount = 20;
         }
     }
 
     private float GetDistanceToCargo()
     {
         return (transform.position - cargoKart.transform.position).magnitude;
+    }
+
+    //Need a better function name.
+    protected void OnHeroVeryFarFromCargo()
+    {
+        Debug.Log("<color=#123acb> On hero very far from cargo </color>");
+        SetMovePosition(cargoKart.transform.position);
     }
 
     //hero should have skill, shouldn't he ???
