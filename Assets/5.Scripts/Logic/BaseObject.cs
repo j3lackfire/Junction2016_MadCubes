@@ -88,8 +88,8 @@ public class BaseObject : PooledObject
     {
         objectData.level = level;
         objectData.sight = objectData.attackRange + 3f;
-        objectData.maxHealth = objectData.baseMaxHealth+ (int)(objectData.baseMaxHealth * level * GameConstant.normalCreepDamageIncreasePerLevel);
-        objectData.damange = objectData.baseDamage+ (int)(objectData.baseDamage * level * GameConstant.normalCreepDamageIncreasePerLevel);
+        objectData.maxHealth = objectData.baseMaxHealth+ (int)(objectData.baseMaxHealth * (level -1) * GameConstant.normalCreepDamageIncreasePerLevel);
+        objectData.damange = objectData.baseDamage+ (int)(objectData.baseDamage * (level - 1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.health = objectData.maxHealth;
     }
 
@@ -138,7 +138,10 @@ public class BaseObject : PooledObject
                 navMeshAgent.SetDestination(transform.position);
 
                 //Another hot fix, to fix the wrong rotation of object when finishing an animation
-                objectRenderer.transform.localRotation = Quaternion.Euler(Vector3.zero);
+                //There is still a weird rotation sometime but I can not catch it all the time :/
+                //Debug.Log("Local Rotation " + objectRenderer.gameObject.transform.localRotation.ToString());
+                objectRenderer.gameObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
+                //Debug.Log("Local Rotation after set - " + objectRenderer.gameObject.transform.localRotation.ToString());
 
                 animatorWrapper.AddTriggerToQueue("EnterIdleAnimation");
                 break;
@@ -159,6 +162,10 @@ public class BaseObject : PooledObject
                 break;
             case ObjectState.Die:
                 //Maybe special case here ? to add the dead effect here and other stuffs.
+                
+                //Object die while moving, when respawned will have a weird position offset.
+                //This is to fix that bug
+                objectRenderer.RestRendererPosition();
                 break;
         }
         objectState = state;
@@ -360,6 +367,7 @@ public class BaseObject : PooledObject
     public virtual void OnObjectDie()
     {
         SetState(ObjectState.Die);
+
         DeadEffect();
         objectManager.RemoveObject(this);
         KillObject();

@@ -18,8 +18,11 @@ public class ObjectRenderer : MonoBehaviour {
     private float deltaB;
     private float alpha = 0.7f;
 
+    private Vector3 initialLocalPosition;
+
     //private function
     private bool isHealthBarShow = true;
+
     public void InitRenderer(BaseObject _parentObject)
     {
         if (_parentObject == null)
@@ -44,6 +47,15 @@ public class ObjectRenderer : MonoBehaviour {
         {
             HideHealthBar();
         }
+        initialLocalPosition = transform.localPosition;
+    }
+
+    //Object die while moving, when respawned will have a weird position offset.
+    //This is to fix that bug
+    public void RestRendererPosition()
+    {
+        transform.localPosition = initialLocalPosition;
+        transform.localRotation = Quaternion.Euler(Vector3.zero);
     }
 
     public void SetHealthBarColor(Color _color)

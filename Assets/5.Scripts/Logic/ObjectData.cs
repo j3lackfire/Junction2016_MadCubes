@@ -3,7 +3,7 @@ using System.Collections;
 
 [System.Serializable]
 public class ObjectData {
-    [HideInInspector]
+    //[HideInInspector]
     public int level;
     //defined value (set in the editor)
     public float moveSpeed;

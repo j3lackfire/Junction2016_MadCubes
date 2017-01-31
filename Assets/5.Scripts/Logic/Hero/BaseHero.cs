@@ -13,6 +13,7 @@ public class BaseHero : BaseObject {
     public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
         base.Init(_objectManager, isEnemyTeam, objectLevel);
+        Debug.Log("<color=red> Update hero stats by level </color>" + objectLevel);
         cargoKart = Directors.instance.playerManager.GetCargoKart();
     }
 
@@ -74,8 +75,8 @@ public class BaseHero : BaseObject {
     public override void UpdateStatsByLevel(int level)
     {
         objectData.level = level;
-        objectData.maxHealth = objectData.maxHealth + (int)(objectData.maxHealth * level * 0.22f);
-        objectData.damange = objectData.damange + (int)(objectData.damange * level * 0.22f);
+        objectData.maxHealth = objectData.maxHealth + (int)(objectData.maxHealth * (level - 1) * 0.22f);
+        objectData.damange = objectData.damange + (int)(objectData.damange * (level - 1) * 0.22f);
         objectData.health = objectData.maxHealth;
     }
 
