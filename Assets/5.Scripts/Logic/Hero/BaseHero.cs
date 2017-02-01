@@ -13,7 +13,6 @@ public class BaseHero : BaseObject {
     public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
         base.Init(_objectManager, isEnemyTeam, objectLevel);
-        Debug.Log("<color=red> Update hero stats by level </color>" + objectLevel);
         cargoKart = Directors.instance.playerManager.GetCargoKart();
     }
 
@@ -48,7 +47,6 @@ public class BaseHero : BaseObject {
     //Need a better function name.
     protected void OnHeroVeryFarFromCargo()
     {
-        Debug.Log("<color=#123acb> On hero very far from cargo </color>");
         SetMovePosition(cargoKart.transform.position);
     }
 

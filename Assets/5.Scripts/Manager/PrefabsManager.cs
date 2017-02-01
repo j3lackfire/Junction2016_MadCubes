@@ -16,7 +16,6 @@ public class PrefabsManager {
     public static Dictionary<string, List<PooledObject>> masterPool = new Dictionary<string, List<PooledObject>>();
     public static long objectCounts;
 
-
     //on scene reload
     public static void ClearPool()
     {

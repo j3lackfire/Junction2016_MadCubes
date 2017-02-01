@@ -3,7 +3,12 @@ using System.Collections.Generic;
 
 public class ObjectManager : BaseManager
 {
-    public override void Init() { }
+    protected Directors director;
+
+    public override void Init()
+    {
+        director = Directors.instance;
+    }
 
     public override void DoUpdate() { }
 

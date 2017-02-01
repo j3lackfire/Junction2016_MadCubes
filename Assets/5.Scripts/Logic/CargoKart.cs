@@ -4,13 +4,14 @@ using System.Collections.Generic;
 public class CargoKart : BaseObject {
     //for use in the editor. Later will change to a randomly generated path.
     public List<GameObject> targetPosList = new List<GameObject>();
+    
     //for easy view/debug in the editor. Remove later
     [SerializeField]
-    public GameObject currentTargetNode;
+    private GameObject currentTargetNode;
 
     private int currentTargetNodeIndex;
 
-    public bool isGameWin;
+    private CargoState cargoState;
     
     public override ObjectType GetObjectType()
     {
@@ -20,17 +21,22 @@ public class CargoKart : BaseObject {
     //Maybe I should recode this thing to follow the base object standard. It will make it easier
     public override void Init(ObjectManager _objectManager, bool _isEnemy, int level)
     {
+        objectManager = _objectManager;
+
         currentTargetNodeIndex = 0;
         currentTargetNode = targetPosList[currentTargetNodeIndex];
-        isGameWin = false;
         PrepareComponent();
         UpdateStatsByLevel(1);
-        objectState = ObjectState.Run;
+
+        SetCargoState(CargoState.Prepare);
     }
 
     protected override void PrepareComponent()
     {
         cameraController = Directors.instance.cameraController;
+        playerManager = Directors.instance.playerManager;
+        enemyManager = Directors.instance.enemyManager;
+
         if (objectRenderer == null)
         {
             objectRenderer = GetComponentInChildren<ObjectRenderer>();
@@ -39,22 +45,123 @@ public class CargoKart : BaseObject {
         objectRenderer.UpdateHealthBar(1f);
     }
 
-    public override void DoUpdate () {
-        if (!isGameWin && objectState != ObjectState.Die)
+    protected void SetCargoState(CargoState _cargoState)
+    {
+        cargoState = _cargoState;
+        switch (_cargoState)
         {
-            MoveToTargetPosition();
+            case CargoState.Invalid:
+                objectState = ObjectState.Idle;
+                break;
+            case CargoState.Idle:
+                objectState = ObjectState.Idle;
+                break;
+            case CargoState.Prepare:
+                //the hero needs to stay inside the cargo's range for 3 seconds for it to move.
+                currentActiveTime = cargoActiveTime;
+                objectState = ObjectState.Idle;
+                break;
+            case CargoState.Run:
+                objectState = ObjectState.Run;
+                break;
+            case CargoState.Finnished:
+                objectState = ObjectState.Idle;
+                Directors.instance.EndBattle();
+                break;
+            case CargoState.Die:
+                objectState = ObjectState.Die;
+                break;
+            default:
+                Debug.Log("<color=red> DEFAULT STATE IS NOT SET !!! PLEASE CHECK !!!!</color>");
+                break;
         }
-        RegenHealth();
     }
 
-    private void MoveToTargetPosition()
+    public override void DoUpdate () {
+        switch(cargoState)
+        {
+            case CargoState.Idle:
+                WhileCargoIdle();
+                break;
+            case CargoState.Prepare:
+                WhileCargoPrepare();
+                break;
+            case CargoState.Run:
+                WhileCargoRun();
+                break;
+            case CargoState.Finnished:
+                WhileCargoFinish();
+                break;
+            case CargoState.Die:
+                //What to do ?
+                break;
+            case CargoState.Invalid:
+            default:
+                Debug.Log("<color=red> DEFAULT STATE IS NOT SET !!! PLEASE CHECK !!!!</color> " + cargoState.ToString());
+                break;
+        }
+        //update animator wrapper to make animation run correctly
+        RegenHealth();
+        //animatorWrapper.DoUpdate();
+        //objectRenderer.DoUpdateRenderer();
+    }
+
+    private void WhileCargoIdle() {}
+
+    [SerializeField]
+    private float cargoActiveRange = 3f;
+
+    [SerializeField]
+    private float cargoActiveTime = 3f;
+
+    [SerializeField]
+    private float currentActiveTime;
+
+    [SerializeField]
+    private bool isBeingActivated = false; //boolean to save performance.
+
+    private void WhileCargoPrepare()
+    {
+        //The cargo should have a sort of area Range. 
+        //If the hero stay in the range for 3 seconds
+        //The cargo will start moving.
+        if (!isBeingActivated)
+        {
+            //Should only check around every 10 or 20 frames or so to save performance.
+            if (IsHeroInActivationRange())
+            {
+                isBeingActivated = true;
+                Debug.Log("<color=#abd125> Hero is in my range !!!!</color>", this);
+                //Debug.Break();
+            }
+        } else
+        {
+            //Reset the timer if the hero move out of the active range.
+            if (IsHeroInActivationRange())
+            {
+                currentActiveTime -= Time.deltaTime;
+                if (currentActiveTime <= 0f)
+                {
+                    SetCargoState(CargoState.Run);
+                    Directors.instance.StartBattle();
+                }
+            } else
+            {
+                currentActiveTime = cargoActiveTime;
+                isBeingActivated = false;
+            }
+        }
+    }
+
+    //move to target position
+    private void WhileCargoRun()
     {
         if (IsTargetNodeReached())
         {
             if (IsFinalNodeReached())
             {
                 //stop moving do nothing
-                isGameWin = true;
+                SetCargoState(CargoState.Finnished);
             }
             else
             {
@@ -63,11 +170,30 @@ public class CargoKart : BaseObject {
         }
         else
         {
+            //store past position to move the camera accordingly
             Vector3 oldPos = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * objectData.moveSpeed);
-            //remove later.
+            //TODO: maybe find a smarter way of doing this.
             cameraController.FollowCargo(transform.position - oldPos);
         }
+
+    }
+
+    private void WhileCargoFinish()
+    {
+
+    }
+
+    private void WhileCargoDie() { }
+
+    //It do some complex calculating, maybe only called every few frame.
+    private bool IsHeroInActivationRange()
+    {
+        if ((playerManager.GetNearestHero(this).transform.position - transform.position).magnitude < cargoActiveRange)
+        {
+            return true;
+        }
+        return false;
     }
 
     private bool IsFinalNodeReached()
@@ -101,12 +227,13 @@ public class CargoKart : BaseObject {
 
     public override void OnObjectDie()
     {
-        SetState(ObjectState.Die);
+        SetCargoState(CargoState.Die);
         objectRenderer.gameObject.SetActive(false);
         cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         DeadEffect();
+        //TODO: rework this
         Directors.instance.EndBattle();
-        Debug.Log("<color=red>Battle state  </color>" + Directors.instance.GetBattleState());
+        Debug.Log("<color=red>Battle state </color>" + Directors.instance.GetBattleState());
     }
 
     public override CorpseType GetCorpseType()
@@ -120,4 +247,14 @@ public class CargoKart : BaseObject {
     }
 
     public override bool AutoHideHealthBar() { return false; }
+}
+
+public enum CargoState
+{
+    Invalid = -1,
+    Prepare = 0, //Stay at the base, doing nothing
+    Run = 1, //
+    Idle, //Not yet decide what this will do :/
+    Finnished, //Reach the final target.
+    Die
 }

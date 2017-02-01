@@ -32,14 +32,15 @@ public class EnemyManager : ObjectManager {
     public override void DoUpdate()
     {
         base.DoUpdate();
-        switch (Directors.instance.GetBattleState())
+        switch (director.GetBattleState())
         {
+            case BattleState.Prepare:
+                break;
             case BattleState.Battling:
                 CheckSpawnUnit();
                 CheckIncreaseLevel();
                 break;
             case BattleState.Finish:
-            case BattleState.Prepare:
                 //Debug.Log("<color=1278ba>~~~state </color>" + Directors.instance.GetBattleState());
                 break;
             default:

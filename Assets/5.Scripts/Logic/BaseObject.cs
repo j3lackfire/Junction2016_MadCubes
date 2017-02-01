@@ -14,7 +14,9 @@ public class BaseObject : PooledObject
     protected Animator childAnimator;
     //MANAGERS
     //[SerializeField]
-    protected ObjectManager objectManager;
+    protected ObjectManager objectManager; //Object's manager, for team specific action
+    protected PlayerManager playerManager; //For player's team function, like get nearest hero
+    protected EnemyManager enemyManager; //For enemy's team function, 
     protected ProjectileManager projectileManager;
     protected CameraController cameraController; //need for screen shake
     protected MouseController mouseController; //need for hero only, might change later though
@@ -63,6 +65,8 @@ public class BaseObject : PooledObject
         projectileManager = Directors.instance.projectileManager;
         cameraController = Directors.instance.cameraController;
         mouseController = Directors.instance.mouseController;
+        playerManager = Directors.instance.playerManager;
+        enemyManager = Directors.instance.enemyManager;
     }
 
     protected virtual void PrepareComponent()
