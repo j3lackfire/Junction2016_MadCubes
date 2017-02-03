@@ -7,12 +7,17 @@ public class HightLightCircle : MonoBehaviour {
     private float rotatingSpeed = 6f;
     [SerializeField]
     private GameObject targetGameObject;
+
+    [SerializeField]
+    private Color color;
+
     private SpriteRenderer spriteRenderer;
     private bool isActive = false;
 
     private float rotatingRate;
     private float currentYRotation;
     private Vector3 positionOffset = new Vector3(0f, 0.2f, 0f);
+
     public void Init()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -20,6 +25,11 @@ public class HightLightCircle : MonoBehaviour {
         HideCircle();
         rotatingRate = 360f / rotatingSpeed;
         currentYRotation = 0f;
+
+        if (color.a != 0)
+        {
+            spriteRenderer.color = color;
+        }
     }
 
     public void DoUpdate()
@@ -41,12 +51,12 @@ public class HightLightCircle : MonoBehaviour {
         spriteRenderer.enabled = false;
     }
 
-    public void FollowTargetObject()
+    private void FollowTargetObject()
     {
         transform.position = targetGameObject.transform.position + positionOffset;
     }
 
-    public void RotateFunction()
+    private void RotateFunction()
     {
         currentYRotation += rotatingRate * Time.deltaTime;
         if (currentYRotation >= 360f)
@@ -56,6 +66,14 @@ public class HightLightCircle : MonoBehaviour {
         transform.localRotation = Quaternion.Euler(new Vector3(-90f, currentYRotation, 0f));
     }
 
+    //Deactive the circle so it does not follow anything.
+    public void DeactiveCircle()
+    {
+        isActive = false;
+        HideCircle();
+    }
+
+    //Set a target for this circle to follow
     public void SetTargetGameObject(GameObject _gameObject) {
         targetGameObject = _gameObject;
         if (targetGameObject == null)

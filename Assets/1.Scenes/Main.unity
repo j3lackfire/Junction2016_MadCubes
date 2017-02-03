@@ -1553,6 +1553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotatingSpeed: 6
   targetGameObject: {fileID: 0}
+  color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1243963423
 GameObject:
   m_ObjectHideFlags: 0
@@ -3078,6 +3079,50 @@ Prefab:
       propertyPath: targetPosList.Array.data[4]
       value: 
       objectReference: {fileID: 1561333058}
+    - target: {fileID: 11472394, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11472394, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11472394, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 21219574, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 21219574, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 21219574, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11472394, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 449242, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 449242, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 449242, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435186, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
+      propertyPath: cargoActiveRange
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
   m_IsPrefabParent: 0

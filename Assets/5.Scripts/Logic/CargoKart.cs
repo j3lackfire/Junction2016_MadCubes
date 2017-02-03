@@ -12,7 +12,27 @@ public class CargoKart : BaseObject {
     private int currentTargetNodeIndex;
 
     private CargoState cargoState;
-    
+
+    //for cargo preparation. Change to other type of circle when I have time to implement
+    [SerializeField]
+    private HightLightCircle activeCircle;
+
+    private float startCircleSize = 6f;
+    private float finishCircleSize = 2.5f;
+
+    [SerializeField]
+    private float cargoActiveRange = 3f;
+
+    [SerializeField]
+    private float cargoActiveTime = 3f;
+
+    [SerializeField]
+    private float currentActiveTime;
+
+    [SerializeField]
+    private bool isBeingActivated = false; //boolean to save performance.
+
+
     public override ObjectType GetObjectType()
     {
         return ObjectType.CargoKart;
@@ -28,6 +48,7 @@ public class CargoKart : BaseObject {
         PrepareComponent();
         UpdateStatsByLevel(1);
 
+        activeCircle.Init();
         SetCargoState(CargoState.Prepare);
     }
 
@@ -59,6 +80,8 @@ public class CargoKart : BaseObject {
             case CargoState.Prepare:
                 //the hero needs to stay inside the cargo's range for 3 seconds for it to move.
                 currentActiveTime = cargoActiveTime;
+                activeCircle.SetTargetGameObject(this.gameObject);
+                SetActivationCircleSize(startCircleSize);
                 objectState = ObjectState.Idle;
                 break;
             case CargoState.Run:
@@ -108,18 +131,6 @@ public class CargoKart : BaseObject {
 
     private void WhileCargoIdle() {}
 
-    [SerializeField]
-    private float cargoActiveRange = 3f;
-
-    [SerializeField]
-    private float cargoActiveTime = 3f;
-
-    [SerializeField]
-    private float currentActiveTime;
-
-    [SerializeField]
-    private bool isBeingActivated = false; //boolean to save performance.
-
     private void WhileCargoPrepare()
     {
         //The cargo should have a sort of area Range. 
@@ -140,17 +151,28 @@ public class CargoKart : BaseObject {
             if (IsHeroInActivationRange())
             {
                 currentActiveTime -= Time.deltaTime;
+                float activeCircleSize = finishCircleSize + (currentActiveTime / cargoActiveTime) * (startCircleSize - 2.5f);
+                SetActivationCircleSize(activeCircleSize);
                 if (currentActiveTime <= 0f)
                 {
                     SetCargoState(CargoState.Run);
+                    activeCircle.DeactiveCircle();
                     Directors.instance.StartBattle();
                 }
             } else
             {
                 currentActiveTime = cargoActiveTime;
                 isBeingActivated = false;
+                SetActivationCircleSize(startCircleSize);
             }
         }
+        activeCircle.DoUpdate();
+    }
+
+    //for the activation circle.
+    private void SetActivationCircleSize(float _size)
+    {
+        activeCircle.transform.localScale = Vector3.one * _size;
     }
 
     //move to target position
