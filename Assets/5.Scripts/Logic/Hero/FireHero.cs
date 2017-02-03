@@ -70,10 +70,14 @@ public class FireHero : BaseHero {
         }
     }
 
-    public override void ActiveSpecial()
+    public override bool ActiveSpecial()
     {
-        base.ActiveSpecial();
+        if (!base.ActiveSpecial())
+        {
+            return false;
+        }
         StartCoroutine(SpellAttackAllNearbyCreey());
+        return true;
     }
 
     //public override void OnHeroRessurect() { base.OnHeroRessurect(); }
@@ -83,17 +87,36 @@ public class FireHero : BaseHero {
     private IEnumerator SpellAttackAllNearbyCreey()
     {
         SetState(ObjectState.Special);
-        List<BaseObject> enemyList = Directors.instance.enemyManager.objectList;
-        for (int i = 0; i < enemyList.Count; i ++)
+        attackCountUp = 0;
+        int waitFramesBetweenAttack = 5;
+        int currentTargetIndex = 0;
+        List<BaseObject> myTargetList = enemyManager.GetObjectInArea(transform.position, objectData.attackRange * 2f);
+        //Safety setup to make sure we don't hit the wrong object.
+        long[] myTargetID = new long[myTargetList.Count];
+        for (int i = 0; i < myTargetList.Count; i ++)
         {
-            if (enemyList[i] != null && Ultilities.GetDistanceBetween(gameObject, enemyList[i].gameObject) <= objectData.attackRange * 2f)
+            myTargetID[i] = myTargetList[i].id;
+        }
+
+        while (attackCountUp < objectData.attackDuration)
+        {
+            for (int i = 0; i < waitFramesBetweenAttack; i ++)
             {
-                targetObject = enemyList[i];
-                DealDamageToTarget();
-                DealDamageToTarget();
-                yield return new WaitForSeconds(0.05f);
+                attackCountUp += Time.deltaTime;
+                yield return null;
+            }
+            if (currentTargetIndex < myTargetList.Count)
+            {
+                //in case of object die and respawned as another object due to object pooling.
+                if (myTargetID[currentTargetIndex] == myTargetList[currentTargetIndex].id)
+                {
+                    SetTargetObject(myTargetList[currentTargetIndex]);
+                    DealDamageToTarget();
+                }
+                currentTargetIndex++;
             }
         }
         SetState(ObjectState.Idle);
     }
 }
+

@@ -88,6 +88,26 @@ public class EnemyManager : ObjectManager {
         }
     }
 
+    /// <summary>
+    /// Get all enemy in an area. An Area is defined by center with radius
+    /// </summary>
+    /// <param name="centerPoint"></param>
+    /// <param name="radius"></param>
+    /// <returns></returns>
+    public List<BaseObject> GetObjectInArea(Vector3 centerPoint, float radius)
+    {
+        List<BaseObject> returnList = new List<BaseObject>();
+        for (int i = 0; i < objectList.Count; i ++)
+        {
+            BaseObject cachedObject = objectList[i];
+            if ((centerPoint - cachedObject.transform.position).magnitude < radius)
+            {
+                returnList.Add(cachedObject);
+            }
+        }
+        return returnList;
+    }
+
     public BaseObject SpawnUnit(ObjectType objectType)
     {
         if (objectList.Count >= GameConstant.enemySpawnCap)

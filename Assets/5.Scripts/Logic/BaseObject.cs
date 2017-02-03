@@ -98,7 +98,7 @@ public class BaseObject : PooledObject
         objectData.maxHealth = objectData.baseMaxHealth+ (int)(objectData.baseMaxHealth * (level -1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.damange = objectData.baseDamage+ (int)(objectData.baseDamage * (level - 1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.health = objectData.maxHealth;
-        objectData.currentSpecialCountDown = objectData.specialCountDown;
+        objectData.currentSpecialCountDown = objectData.specialCoolDown;
     }
 
     //Update is called every frame by this object manager.
@@ -359,23 +359,24 @@ public class BaseObject : PooledObject
 
     //Special skill of object. Usually use for hero but I might think of something clever later
     //Implement this to make sure if you CAN NOT activate the special, you WON'T
-    public virtual void ActiveSpecial()
+    public virtual bool ActiveSpecial()
     {
-        if (!CanActiveSpecial())
+        if (CanActiveSpecial())
         {
-            return;
+            objectData.currentSpecialCountDown = 0;
+            return true;
         }
-        objectData.currentSpecialCountDown = 0;
+        return false;
     }
 
     protected virtual bool CanActiveSpecial()
     {
-        return objectData.currentSpecialCountDown >= objectData.specialCountDown;
+        return objectData.currentSpecialCountDown >= objectData.specialCoolDown;
     }
 
     protected virtual void UpdateSpecialCountDown()
     {
-        if (objectData.currentSpecialCountDown < objectData.specialCountDown)
+        if (objectData.currentSpecialCountDown < objectData.specialCoolDown)
         {
             objectData.currentSpecialCountDown += Time.deltaTime;
         }

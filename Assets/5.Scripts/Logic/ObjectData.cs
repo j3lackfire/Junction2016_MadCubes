@@ -15,10 +15,11 @@ public class ObjectData {
 
     public float respawnTime; //only use for hero
 
+    //This is the length of the attack animation
     public float attackDuration;
     public float dealDamageTime;
 
-    public float specialCountDown;
+    public float specialCoolDown;
 
     //calculated value - code calculate value
     [HideInInspector]
@@ -32,6 +33,6 @@ public class ObjectData {
     [HideInInspector]
     public float sight;
 
-    [HideInInspector]
+    //[HideInInspector]
     public float currentSpecialCountDown;
 }

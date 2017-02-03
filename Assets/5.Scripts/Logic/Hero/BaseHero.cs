@@ -10,17 +10,22 @@ public class BaseHero : BaseObject {
     //cached object for calculating
     private CargoKart cargoKart;
 
+    [SerializeField]
+    public GameObject manaIndicationCircle;
+    private float manaCircleStartSize;
+
+
     public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
         base.Init(_objectManager, isEnemyTeam, objectLevel);
         cargoKart = Directors.instance.playerManager.GetCargoKart();
+        manaCircleStartSize = manaIndicationCircle.transform.localScale.x;
     }
 
     public override void DoUpdate()
     {
         base.DoUpdate();
         ValidateHeroDistanceToCargo();
-        
     }
 
     //private cached value, only used for the function beloew.
@@ -44,18 +49,34 @@ public class BaseHero : BaseObject {
         return (transform.position - cargoKart.transform.position).magnitude;
     }
 
+    public override bool ActiveSpecial()
+    {
+        if (CanActiveSpecial())
+        {
+            SetManaIndicationCircleSize(0.001f);
+        }
+        return base.ActiveSpecial();
+    }
+
+    private void SetManaIndicationCircleSize(float percent) //range from 0 to 1
+    {
+        //1.25 = base value, set in the editor
+        manaIndicationCircle.transform.localScale = Vector3.one * percent * manaCircleStartSize;
+    }
+
+    protected override void UpdateSpecialCountDown()
+    {
+        base.UpdateSpecialCountDown();
+        if (objectData.currentSpecialCountDown < objectData.specialCoolDown)
+        {
+            SetManaIndicationCircleSize(objectData.currentSpecialCountDown / objectData.specialCoolDown);
+        }
+    }
+
     //Need a better function name.
     protected void OnHeroVeryFarFromCargo()
     {
         SetMovePosition(cargoKart.transform.position);
-    }
-
-    //hero should have skill, shouldn't he ???
-    public override void ActiveSpecial()
-    {
-        base.ActiveSpecial();
-        //Is this neccesary ?
-        ReceiveDamage(objectData.maxHealth / 3);
     }
 
     public override void OnObjectDie()
