@@ -7,7 +7,7 @@ public class BaseHero : BaseObject {
     protected float deadCountDown;
     protected float maxDistantToCargo =25;
 
-    //private object for calculating
+    //cached object for calculating
     private CargoKart cargoKart;
 
     public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
@@ -51,7 +51,12 @@ public class BaseHero : BaseObject {
     }
 
     //hero should have skill, shouldn't he ???
-    public virtual void ActiveSkill() { }
+    public override void ActiveSpecial()
+    {
+        base.ActiveSpecial();
+        //Is this neccesary ?
+        ReceiveDamage(objectData.maxHealth / 3);
+    }
 
     public override void OnObjectDie()
     {
@@ -75,7 +80,6 @@ public class BaseHero : BaseObject {
             //navMeshAgent.Move(PlayerManager.cargoKart.transform.position);
             transform.position = Directors.instance.playerManager.GetCargoKart().transform.position + new Vector3(Random.Range(-2f,2f), 0f, Random.Range(-2f, 2f));
             childAnimator.gameObject.SetActive(true);
-            SetState(ObjectState.Idle);
             OnHeroRessurect();
         }
     }

@@ -34,6 +34,8 @@ public class BaseObject : PooledObject
     protected BaseObject targetObject;
     
     protected Vector3 targetPosition;
+    //The position of the target object is always changing. It would hurt performance 
+    //if we update the target position every frame.
     protected int objectChargeCountdown;
 
     public virtual ObjectType GetObjectType() { return ObjectType.Invalid; }
@@ -88,6 +90,7 @@ public class BaseObject : PooledObject
     }
 
     //TODO: make this function read data externally
+    //TODO: maybe make object stats not depend on level. It is very confusing for the player.
     public virtual void UpdateStatsByLevel(int level = 1)
     {
         objectData.level = level;
@@ -95,6 +98,7 @@ public class BaseObject : PooledObject
         objectData.maxHealth = objectData.baseMaxHealth+ (int)(objectData.baseMaxHealth * (level -1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.damange = objectData.baseDamage+ (int)(objectData.baseDamage * (level - 1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.health = objectData.maxHealth;
+        objectData.currentSpecialCountDown = objectData.specialCountDown;
     }
 
     //Update is called every frame by this object manager.
@@ -124,9 +128,13 @@ public class BaseObject : PooledObject
                 WhileObjectDie();
                 break;
         }
-        //update animator wrapper to make animation run correctly
+        //Make the special skill countdown correctly
+        UpdateSpecialCountDown();
+        //Regen the object's health.
         RegenHealth();
+        //update animator wrapper to make animation run correctly
         animatorWrapper.DoUpdate();
+        //update the renderer because of things....
         objectRenderer.DoUpdateRenderer();
     }
 
@@ -158,11 +166,14 @@ public class BaseObject : PooledObject
                 }
                 break;
             case ObjectState.Attack:
+                navMeshAgent.Stop();
                 animatorWrapper.AddTriggerToQueue("EnterAttackAnimation");
                 break;
             case ObjectState.Stun:
                 break;
             case ObjectState.Special:
+                navMeshAgent.Stop();
+                animatorWrapper.AddTriggerToQueue("EnterAttackAnimation");
                 break;
             case ObjectState.Die:
                 //Maybe special case here ? to add the dead effect here and other stuffs.
@@ -199,6 +210,7 @@ public class BaseObject : PooledObject
 
     protected virtual void ObjectCharging()
     {
+        //target changed mean target is die and is respawned as another object by the pool system.
         if (IsTargetChanged())
         {
             SetState(ObjectState.Idle);
@@ -308,7 +320,6 @@ public class BaseObject : PooledObject
             SetState(ObjectState.Idle);
             return;
         }
-        navMeshAgent.Stop();
         isDamageDeal = false;
         attackCountUp = 0;
     }
@@ -346,9 +357,34 @@ public class BaseObject : PooledObject
         }
     }
 
+    //Special skill of object. Usually use for hero but I might think of something clever later
+    //Implement this to make sure if you CAN NOT activate the special, you WON'T
+    public virtual void ActiveSpecial()
+    {
+        if (!CanActiveSpecial())
+        {
+            return;
+        }
+        objectData.currentSpecialCountDown = 0;
+    }
+
+    protected virtual bool CanActiveSpecial()
+    {
+        return objectData.currentSpecialCountDown >= objectData.specialCountDown;
+    }
+
+    protected virtual void UpdateSpecialCountDown()
+    {
+        if (objectData.currentSpecialCountDown < objectData.specialCountDown)
+        {
+            objectData.currentSpecialCountDown += Time.deltaTime;
+        }
+    }
+
     //Passing the attacker in to check detail
     public virtual void ReceiveDamage(int damage, BaseObject attacker = null)
     {
+        //If the object is attacked, stop regen health for 3 seconds.
         if (GetHealthRegenRate() > 0f)
         {
             healthRegenCountUp = - GameConstant.attackStopRegenTime * GetHealthRegenRate() * objectData.maxHealth / 100f;
@@ -365,7 +401,6 @@ public class BaseObject : PooledObject
         {
             OnObjectDie();
         } 
-        
     }
 
     public virtual void OnObjectDie()

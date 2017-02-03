@@ -18,14 +18,20 @@ public class ObjectData {
     public float attackDuration;
     public float dealDamageTime;
 
+    public float specialCountDown;
+
     //calculated value - code calculate value
-    //[HideInInspector]
+    [HideInInspector]
     public int maxHealth;
-    //[HideInInspector]
+    [HideInInspector]
     public int damange;
 
-    //[HideInInspector]
-    public int health;
+    [HideInInspector]
+    public int health; //current health
+
     [HideInInspector]
     public float sight;
+
+    [HideInInspector]
+    public float currentSpecialCountDown;
 }

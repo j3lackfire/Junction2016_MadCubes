@@ -113,6 +113,15 @@ public class MouseController : BaseManager
         {
             SelectObject(Directors.instance.playerManager.heroList[1]);
         }
+
+        //Try test with button for skill because activating a skill while ressurected is very dumb.
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (currentlySelectedHero != null)
+            {
+                currentlySelectedHero.ActiveSpecial();
+            }
+        }
     }
 
     private void SelectObject(BaseObject baseObject)
@@ -137,7 +146,7 @@ public class MouseController : BaseManager
         StartCoroutine(MovementMarkEnum());
     }
 
-    IEnumerator MovementMarkEnum()
+    private IEnumerator MovementMarkEnum()
     {
         float circleSize = 2f;
         movementCircle.transform.localScale = new Vector3(circleSize, 0.1f, circleSize);

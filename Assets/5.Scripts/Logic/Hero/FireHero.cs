@@ -70,16 +70,19 @@ public class FireHero : BaseHero {
         }
     }
 
-    public override void OnHeroRessurect()
+    public override void ActiveSpecial()
     {
-        base.OnHeroRessurect();
-        StartCoroutine(MakeItRain());
+        base.ActiveSpecial();
+        StartCoroutine(SpellAttackAllNearbyCreey());
     }
+
+    //public override void OnHeroRessurect() { base.OnHeroRessurect(); }
 
     //TODO : Find better solution
     //is there a way to remove ienumerator because it doesn't match my DoUpdate style very good :/
-    private IEnumerator MakeItRain()
+    private IEnumerator SpellAttackAllNearbyCreey()
     {
+        SetState(ObjectState.Special);
         List<BaseObject> enemyList = Directors.instance.enemyManager.objectList;
         for (int i = 0; i < enemyList.Count; i ++)
         {
@@ -91,5 +94,6 @@ public class FireHero : BaseHero {
                 yield return new WaitForSeconds(0.05f);
             }
         }
+        SetState(ObjectState.Idle);
     }
 }

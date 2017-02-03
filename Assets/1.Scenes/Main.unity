@@ -261,7 +261,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 494642, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 5.24
+      value: 9.86
       objectReference: {fileID: 0}
     - target: {fileID: 494642, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
       propertyPath: m_LocalPosition.y
@@ -290,10 +290,6 @@ Prefab:
     - target: {fileID: 494642, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 19538916, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
-      propertyPath: m_AngularSpeed
-      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
@@ -614,7 +610,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 222496458}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: -30.2}
+  m_LocalPosition: {x: 0, y: 0.05, z: -30.2}
   m_LocalScale: {x: 3, y: 1, z: 3}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -2847,7 +2843,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 410442, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -8.34
+      value: -14.79
       objectReference: {fileID: 0}
     - target: {fileID: 410442, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
       propertyPath: m_LocalPosition.y
@@ -2876,10 +2872,6 @@ Prefab:
     - target: {fileID: 410442, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
       propertyPath: m_RootOrder
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 19557396, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
-      propertyPath: m_AngularSpeed
-      value: 120
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c849d4c45af23ad4eb0d78addb904a6e, type: 2}
@@ -3109,19 +3101,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 449242, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
       propertyPath: m_LocalScale.x
-      value: 2.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 449242, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
       propertyPath: m_LocalScale.y
-      value: 2.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 449242, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
       propertyPath: m_LocalScale.z
-      value: 2.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11435186, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}
       propertyPath: cargoActiveRange
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5dcfa6c7dd096a749a51dd86bfca64cd, type: 2}

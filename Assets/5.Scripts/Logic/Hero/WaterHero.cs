@@ -24,17 +24,18 @@ public class WaterHero : BaseHero {
         base.ObjectAttack();
     }
 
-    Ray testRay;
+    Ray attackRay;
 
     protected override void DealDamageToTarget()
     {
         if (targetObject != null)
         {
+            //use number of enemy hit for screen shake.
             int numberOfEnemyHit = 0;
             Vector3 bulletEndPos = transform.position + (targetObject.transform.position - transform.position).normalized * 75f;
             projectileManager.CreateProjectile(ProjectileType.Water_Hero_Laser, false, objectData.damange, transform.position , this, bulletEndPos, targetObject);
-            testRay = new Ray(transform.position, targetObject.transform.position - transform.position);
-            RaycastHit[] hitObject = Physics.RaycastAll(testRay, 50f);
+            attackRay = new Ray(transform.position, targetObject.transform.position - transform.position);
+            RaycastHit[] hitObject = Physics.RaycastAll(attackRay, 50f);
 
             for (int i = 0; i < hitObject.Length; i++)
             {
@@ -55,23 +56,27 @@ public class WaterHero : BaseHero {
         }
     }
 
-    public override void OnHeroRessurect()
+    public override void ActiveSpecial()
     {
-        base.OnHeroRessurect();
-        StartCoroutine(MakeItRain());
+        base.ActiveSpecial();
+        StartCoroutine(SpellAttackAllBigCreep());
     }
 
-    IEnumerator MakeItRain()
+    //public override void OnHeroRessurect() { base.OnHeroRessurect(); }
+
+    private IEnumerator SpellAttackAllBigCreep()
     {
+        SetState(ObjectState.Special);
         List<BaseObject> enemyList = Directors.instance.enemyManager.objectList;
         for (int i = 0; i < enemyList.Count; i++)
         {
-            if (enemyList[i] != null && (enemyList[i].objectData.attackRange >= 10))
+            if (enemyList[i] != null && (enemyList[i].GetObjectType() == ObjectType.Water_Creep))
             {
                 targetObject = enemyList[i];
                 DealDamageToTarget();
                 yield return new WaitForSeconds(0.1f);
             }
         }
+        SetState(ObjectState.Idle);
     }
 }
