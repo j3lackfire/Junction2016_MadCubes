@@ -34,5 +34,5 @@ public class ObjectData {
     public float sight;
 
     //[HideInInspector]
-    public float currentSpecialCountDown;
+    public float currentSpecialCoolDown;
 }

@@ -78,7 +78,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 141514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.7, y: -0.1, z: 4.75}
+  m_LocalPosition: {x: 4.7, y: -0.1, z: -23.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -275,10 +275,12 @@ MonoBehaviour:
     respawnTime: 0
     attackDuration: 2.5
     dealDamageTime: 0.5
+    specialCoolDown: 0
     maxHealth: 200
     damange: 20
     health: 0
     sight: 0
+    currentSpecialCountDown: 0
   isEnemy: 0
   objectState: 0
 --- !u!114 &11483312
@@ -292,8 +294,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8436200d8220a44bb925144c63db07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarColor: {r: 0, g: 0.95686275, b: 1, a: 0.7058824}
+  healthBarColor: {r: 0, g: 1, b: 0.19215687, a: 0.7058824}
+  middleHealthBarColor: {r: 1, g: 1, b: 0, a: 0.7}
   deadHealthBarColor: {r: 1, g: 0.16862746, b: 0.101960786, a: 0.7058824}
+  autoHideHealthBar: 0
 --- !u!195 &19533170
 NavMeshAgent:
   m_ObjectHideFlags: 1

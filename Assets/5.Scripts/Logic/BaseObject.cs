@@ -87,6 +87,7 @@ public class BaseObject : PooledObject
             objectRenderer.InitRenderer(this);
         }
         objectRenderer.UpdateHealthBar(1f);
+        objectRenderer.OnParentObjectRespawn();
     }
 
     //TODO: make this function read data externally
@@ -98,7 +99,7 @@ public class BaseObject : PooledObject
         objectData.maxHealth = objectData.baseMaxHealth+ (int)(objectData.baseMaxHealth * (level -1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.damange = objectData.baseDamage+ (int)(objectData.baseDamage * (level - 1) * GameConstant.normalCreepDamageIncreasePerLevel);
         objectData.health = objectData.maxHealth;
-        objectData.currentSpecialCountDown = objectData.specialCoolDown;
+        objectData.currentSpecialCoolDown = objectData.specialCoolDown;
     }
 
     //Update is called every frame by this object manager.
@@ -180,7 +181,7 @@ public class BaseObject : PooledObject
                 
                 //Object die while moving, when respawned will have a weird position offset.
                 //This is to fix that bug
-                objectRenderer.RestRendererPosition();
+                objectRenderer.OnParentObjectDie();
                 break;
         }
         objectState = state;
@@ -363,7 +364,7 @@ public class BaseObject : PooledObject
     {
         if (CanActiveSpecial())
         {
-            objectData.currentSpecialCountDown = 0;
+            objectData.currentSpecialCoolDown = 0;
             return true;
         }
         return false;
@@ -371,14 +372,14 @@ public class BaseObject : PooledObject
 
     protected virtual bool CanActiveSpecial()
     {
-        return objectData.currentSpecialCountDown >= objectData.specialCoolDown;
+        return objectData.currentSpecialCoolDown >= objectData.specialCoolDown;
     }
 
     protected virtual void UpdateSpecialCountDown()
     {
-        if (objectData.currentSpecialCountDown < objectData.specialCoolDown)
+        if (objectData.currentSpecialCoolDown < objectData.specialCoolDown)
         {
-            objectData.currentSpecialCountDown += Time.deltaTime;
+            objectData.currentSpecialCoolDown += Time.deltaTime;
         }
     }
 

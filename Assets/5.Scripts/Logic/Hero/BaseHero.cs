@@ -20,6 +20,7 @@ public class BaseHero : BaseObject {
         base.Init(_objectManager, isEnemyTeam, objectLevel);
         cargoKart = Directors.instance.playerManager.GetCargoKart();
         manaCircleStartSize = manaIndicationCircle.transform.localScale.x;
+        objectData.currentSpecialCoolDown = objectData.specialCoolDown;
     }
 
     public override void DoUpdate()
@@ -67,9 +68,9 @@ public class BaseHero : BaseObject {
     protected override void UpdateSpecialCountDown()
     {
         base.UpdateSpecialCountDown();
-        if (objectData.currentSpecialCountDown < objectData.specialCoolDown)
+        if (objectData.currentSpecialCoolDown < objectData.specialCoolDown)
         {
-            SetManaIndicationCircleSize(objectData.currentSpecialCountDown / objectData.specialCoolDown);
+            SetManaIndicationCircleSize(objectData.currentSpecialCoolDown / objectData.specialCoolDown);
         }
     }
 
@@ -87,6 +88,7 @@ public class BaseHero : BaseObject {
         cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         childAnimator.gameObject.SetActive(false);
         deadCountDown = objectData.respawnTime;
+        manaIndicationCircle.SetActive(false);
         SetState(ObjectState.Die);
     }
 
@@ -108,11 +110,11 @@ public class BaseHero : BaseObject {
     public virtual void OnHeroRessurect() {
         SetState(ObjectState.Idle);
         childAnimator.gameObject.SetActive(true);
-        //errr ?
+        manaIndicationCircle.SetActive(true);
+        
         //I want to make that each time hero level up, he might gains a new skill instead of just raw data.
         //Make it way better.
-        objectData.level++;
-        UpdateStatsByLevel(objectData.level);
+        UpdateStatsByLevel(++objectData.level);
         objectRenderer.UpdateHealthBar(1f);
     }
 

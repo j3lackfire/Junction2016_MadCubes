@@ -238,7 +238,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 166818}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.15, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
   m_Children: []
@@ -679,7 +679,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8436200d8220a44bb925144c63db07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBarColor: {r: 0, g: 0.95686275, b: 1, a: 0.7058824}
+  healthBarColor: {r: 0, g: 1, b: 0.19215687, a: 0.7058824}
+  middleHealthBarColor: {r: 1, g: 1, b: 0, a: 0.7}
   deadHealthBarColor: {r: 1, g: 0.16862746, b: 0.101960786, a: 0.7058824}
   autoHideHealthBar: 0
 --- !u!114 &11477376
