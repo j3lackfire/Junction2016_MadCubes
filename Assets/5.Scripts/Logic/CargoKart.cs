@@ -15,7 +15,7 @@ public class CargoKart : BaseObject {
 
     //for cargo preparation. Change to other type of circle when I have time to implement
     [SerializeField]
-    private HightLightCircle activeCircle;
+    private HighLightCircle activeCircle;
 
     private float startCircleSize = 6f;
     private float finishCircleSize = 2.5f;
@@ -192,11 +192,7 @@ public class CargoKart : BaseObject {
         }
         else
         {
-            //store past position to move the camera accordingly
-            Vector3 oldPos = transform.position;
             transform.position = Vector3.MoveTowards(transform.position, currentTargetNode.transform.position, Time.deltaTime * objectData.moveSpeed);
-            //TODO: maybe find a smarter way of doing this.
-            cameraController.FollowCargo(transform.position - oldPos);
         }
 
     }

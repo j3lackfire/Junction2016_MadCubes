@@ -61,7 +61,7 @@ public class FireHero : BaseHero {
             if (timeToDealDamage != 999f)
             {
                 DealDamageToTarget();
-                timeToDealDamage += 0.025f;
+                timeToDealDamage += 0.075f;
             }
         }
         if (attackCountUp >= objectData.attackDuration)

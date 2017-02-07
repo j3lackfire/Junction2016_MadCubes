@@ -5,13 +5,34 @@ public class CameraController : BaseManager {
 
     private Animator camAnimator;
 
+    private GameObject cargo;
+    private Vector3 oldCargoPosition;
+
+    private PlayerManager playerManager;
+
     public override void Init()
     {
+        base.Init();
+        playerManager = director.playerManager;
         camAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
     public override void DoUpdate()
     {
+        base.DoUpdate();
+        switch (director.GetBattleState())
+        {
+            case BattleState.Prepare:
+                break;
+            case BattleState.Battling:
+                AutomaticFollowCargo();
+                break;
+            case BattleState.Finish:
+                break;
+            default:
+                Debug.Log("<color=red>CAMERA MANANGER - battle state not defined !!!!</color>" + director.GetBattleState());
+                break;
+        }
     }
 
     public void ScreenShake(ScreenShakeMagnitude magnitude)
@@ -27,9 +48,16 @@ public class CameraController : BaseManager {
         }
     }
 
-    public void FollowCargo(Vector3 delta)
+    private void AutomaticFollowCargo()
     {
-        transform.position += delta;
+        if (cargo == null)
+        {
+            cargo = playerManager.GetCargoKart().gameObject;
+            oldCargoPosition = cargo.transform.position;
+        }
+        Vector3 deltaPos = cargo.transform.position - oldCargoPosition;
+        transform.position += deltaPos;
+        oldCargoPosition = cargo.transform.position;
     }
 }
 

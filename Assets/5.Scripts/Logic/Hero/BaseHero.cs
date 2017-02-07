@@ -10,8 +10,7 @@ public class BaseHero : BaseObject {
     //cached object for calculating
     private CargoKart cargoKart;
 
-    [SerializeField]
-    public GameObject manaIndicationCircle;
+    public HighLightCircle manaIndicationCircle;
     private float manaCircleStartSize;
 
 
@@ -19,6 +18,8 @@ public class BaseHero : BaseObject {
     {
         base.Init(_objectManager, isEnemyTeam, objectLevel);
         cargoKart = Directors.instance.playerManager.GetCargoKart();
+        manaIndicationCircle.Init();
+        manaIndicationCircle.SetTargetGameObject(this.gameObject);
         manaCircleStartSize = manaIndicationCircle.transform.localScale.x;
         objectData.currentSpecialCoolDown = objectData.specialCoolDown;
     }
@@ -27,6 +28,7 @@ public class BaseHero : BaseObject {
     {
         base.DoUpdate();
         ValidateHeroDistanceToCargo();
+        manaIndicationCircle.DoUpdate();
     }
 
     //private cached value, only used for the function beloew.
@@ -88,7 +90,7 @@ public class BaseHero : BaseObject {
         cameraController.ScreenShake(ScreenShakeMagnitude.Big);
         childAnimator.gameObject.SetActive(false);
         deadCountDown = objectData.respawnTime;
-        manaIndicationCircle.SetActive(false);
+        manaIndicationCircle.gameObject.SetActive(false);
         SetState(ObjectState.Die);
     }
 
@@ -110,7 +112,7 @@ public class BaseHero : BaseObject {
     public virtual void OnHeroRessurect() {
         SetState(ObjectState.Idle);
         childAnimator.gameObject.SetActive(true);
-        manaIndicationCircle.SetActive(true);
+        manaIndicationCircle.gameObject.SetActive(true);
         
         //I want to make that each time hero level up, he might gains a new skill instead of just raw data.
         //Make it way better.

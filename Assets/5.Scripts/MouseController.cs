@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class MouseController : BaseManager
 {
 
-    public HightLightCircle hightLightCircle;
+    public HighLightCircle hightLightCircle;
     public GameObject movementCircle;
     public GameObject attackedCircle;
 

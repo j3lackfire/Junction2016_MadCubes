@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HightLightCircle : MonoBehaviour {
+public class HighLightCircle : MonoBehaviour {
     [SerializeField]
     [Tooltip("the number of seconds it takes to fully rotate 1 round")]
     private float rotatingSpeed = 6f;
     [SerializeField]
     private GameObject targetGameObject;
 
-    [SerializeField]
-    private Color color;
+    //[SerializeField]
+    //private Color color;
 
     private SpriteRenderer spriteRenderer;
     private bool isActive = false;
 
     private float rotatingRate;
     private float currentYRotation;
-    private Vector3 positionOffset = new Vector3(0f, 0.2f, 0f);
+    private Vector3 positionOffset;
 
     public void Init()
     {
@@ -26,10 +26,13 @@ public class HightLightCircle : MonoBehaviour {
         rotatingRate = 360f / rotatingSpeed;
         currentYRotation = 0f;
 
-        if (color.a != 0)
-        {
-            spriteRenderer.color = color;
-        }
+        positionOffset = new Vector3(0, transform.localPosition.y, 0);
+
+        //if (color.a != 0)
+        //{
+        //    spriteRenderer.color = color;
+        //}
+        transform.parent = Directors.instance.mouseController.transform;
     }
 
     public void DoUpdate()
