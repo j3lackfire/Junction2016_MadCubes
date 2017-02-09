@@ -14,6 +14,8 @@ public class BaseHero : BaseObject {
     public HighLightCircle manaIndicationCircle;
     private float manaCircleStartSize;
 
+    //screen aspect ratio use for automatically move the object back to the cargo
+    private float screenAspectRatio;
 
     public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
@@ -23,6 +25,8 @@ public class BaseHero : BaseObject {
         manaIndicationCircle.SetTargetGameObject(this.gameObject);
         manaCircleStartSize = manaIndicationCircle.transform.localScale.x;
         objectData.currentSpecialCoolDown = objectData.specialCoolDown;
+
+        screenAspectRatio = Screen.width / (float)Screen.height;
     }
 
     protected override void AdditionalUpdateFunction()
@@ -46,16 +50,30 @@ public class BaseHero : BaseObject {
         validateHeroDistanceCheckCount--;
         if (validateHeroDistanceCheckCount <= 0 
             && objectState != ObjectState.Die 
-            && GetDistanceToCargo() >= maxDistantToCargo)
+            && GetScreenDistanceToCargo() >= maxDistantToCargo)
         {
             OnHeroVeryFarFromCargo();
             validateHeroDistanceCheckCount = 20;
         }
     }
 
-    private float GetDistanceToCargo()
+    //private float GetDistanceToCargo()
+    //{
+    //    return (transform.position - cargoKart.transform.position).magnitude;
+    //}
+
+    //because the screen is ot square so we need to calculate accordingly
+    private float GetScreenDistanceToCargo()
     {
-        return (transform.position - cargoKart.transform.position).magnitude;
+        float distanceX = transform.position.x - cargoKart.transform.position.x;
+        distanceX = distanceX < 0 ? -distanceX : distanceX; //make sure the value is not negative
+
+        float distanceZ = transform.position.z - cargoKart.transform.position.z;
+        distanceZ = distanceZ < 0 ? -distanceZ : distanceZ; //make sure the value is not negative
+        distanceZ *= screenAspectRatio;
+        //this way, hero can go further diagonally.
+        return distanceX > distanceZ ? distanceX : distanceZ;
+        //return Mathf.Sqrt(distanceX * distanceX + distanceZ * distanceZ);
     }
 
     public override bool ActiveSpecial()

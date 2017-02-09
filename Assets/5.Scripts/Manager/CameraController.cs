@@ -4,6 +4,9 @@ using System.Collections.Generic;
 public class CameraController : BaseManager {
     [Header("Camera configuration")]
     [SerializeField]
+    private float cameraSpeed = 5f;
+
+    [SerializeField]
     private Vector3 cargoOffsetPosition; //offset position compare to the cargo
 
     //Dynamic camera. If hero is close, the camera will be close to the ground (zoomed in)
@@ -19,35 +22,38 @@ public class CameraController : BaseManager {
     [SerializeField]
     private float maxHeroDistance;
 
+    //[SerializeField] //test variable just to see.
+    //float d;
+
     //Object components
     private Animator camAnimator;
-
-    [SerializeField]
-    float d;
 
     //cached object
     private GameObject cargo;
     private PlayerManager playerManager;
+    private Vector3 targetPosition; //the position the camera want to go to
+    [SerializeField]
+    private float screenAspectRatio;
 
     public override void Init()
     {
         base.Init();
         playerManager = director.playerManager;
         camAnimator = gameObject.GetComponentInChildren<Animator>();
+        screenAspectRatio = Screen.width / (float)Screen.height;
     }
 
     public override void DoUpdate()
     {
         base.DoUpdate();
+        MoveCameraToTargetPosition();
+        AutoAdjustCameraSize();
         switch (director.GetBattleState())
         {
             case BattleState.Prepare:
-                d = GetFurthestHeroDistanceToCamera();
-                AutoAdjustCameraSize();
                 WhileBattlePrepare();
                 break;
             case BattleState.Battling:
-                AutoAdjustCameraSize();
                 AutomaticFollowCargo();
                 break;
             case BattleState.Finish:
@@ -76,29 +82,60 @@ public class CameraController : BaseManager {
     much better */
     public void SetCameraPosition(Vector3 _position)
     {
-        transform.position = new Vector3(_position.x, transform.position.y, _position.z);
+        targetPosition = _position;
     }
 
-    private float GetFurthestHeroDistanceToCamera()
+    private void MoveCameraToTargetPosition()
     {
-        //TODO: Can be optimized by cached all of the hero at the start of the prepare phase
+        transform.position = Vector3.Lerp(transform.position, new Vector3(targetPosition.x, transform.position.y, targetPosition.z), cameraSpeed * Time.deltaTime);
+    }
+
+    //private float GetFurthestHeroDistanceToCamera()
+    //{
+    //    //TODO: Can be optimized by cached all of the hero at the start of the prepare phase
+    //    List<BaseHero> heroList = playerManager.heroList;
+    //    float furthestDistance = -1f;
+    //    Vector3 cameraPos = new Vector3(transform.position.x, 0, transform.position.z);
+    //    for (int i = 0; i < heroList.Count; i ++)
+    //    {
+    //        float distance = (heroList[i].transform.position - cameraPos).magnitude;
+    //        if (distance > furthestDistance)
+    //        {
+    //            furthestDistance = distance;
+    //        }
+    //    }
+    //    return furthestDistance;
+    //}
+
+    //need to consider in the screen ratio which is not SQUARE screen
+    private float GetFurthestScreenDistanceToCamera()
+    {
         List<BaseHero> heroList = playerManager.heroList;
         float furthestDistance = -1f;
         Vector3 cameraPos = new Vector3(transform.position.x, 0, transform.position.z);
-        for (int i = 0; i < heroList.Count; i ++)
+        for (int i = 0; i < heroList.Count; i++)
         {
-            float distance = (heroList[i].transform.position - cameraPos).magnitude;
+            Vector3 heroPos = heroList[i].transform.position;
+            float distanceX = heroPos.x - cameraPos.x;
+            distanceX = distanceX < 0 ? -distanceX : distanceX; //make sure the value is not negative
+
+            float distanceZ = heroPos.z - cameraPos.z;
+            distanceZ = distanceZ < 0 ? -distanceZ : distanceZ; //make sure the value is not negativedistanceZ *= screenAspectRatio;
+            distanceZ *= screenAspectRatio;
+            float distance = distanceX > distanceZ ? distanceX : distanceZ;
+            //float distance = Mathf.Sqrt(distanceX * distanceX + distanceZ * distanceZ);
             if (distance > furthestDistance)
             {
                 furthestDistance = distance;
             }
         }
+
         return furthestDistance;
     }
 
     private void AutoAdjustCameraSize()
     {
-        float d = GetFurthestHeroDistanceToCamera();
+        float d = GetFurthestScreenDistanceToCamera();
         if (d <= minHeroDistance)
         {
             SetCameraSize(0);
@@ -166,8 +203,7 @@ public class CameraController : BaseManager {
         {
             cargo = playerManager.GetCargoKart().gameObject;
         }
-        Vector3 newPos = cargo.transform.position + cargoOffsetPosition;
-        transform.position = new Vector3(newPos.x, transform.position.y, newPos.z);
+        SetCameraPosition(cargo.transform.position + cargoOffsetPosition);
     }
 }
 

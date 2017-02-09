@@ -458,7 +458,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 2, z: 2}
+  m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!95 &9588802
 Animator:
@@ -533,7 +533,6 @@ MonoBehaviour:
     sight: 0
     currentSpecialCoolDown: 0
   isEnemy: 0
-  objectState: 0
   manaIndicationCircle: {fileID: 11430246}
 --- !u!195 &19538916
 NavMeshAgent:
