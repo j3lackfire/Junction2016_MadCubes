@@ -34,6 +34,7 @@ public class BaseObject : PooledObject
     protected BaseObject targetObject;
     
     protected Vector3 targetPosition;
+    private bool isHavingTargetPosition;
     //The position of the target object is always changing. It would hurt performance 
     //if we update the target position every frame.
     protected int objectChargeCountdown;
@@ -58,6 +59,7 @@ public class BaseObject : PooledObject
         UpdateStatsByLevel(objectLevel);
         SetState(ObjectState.Idle);
         isDamageDeal = false;
+        isHavingTargetPosition = false;
         objectChargeCountdown = GameConstant.objectChargeCountdownValue;
         idleCountDown = GameConstant.idleCheckFrequency;
         healthRegenCountUp = 0f;
@@ -197,6 +199,10 @@ public class BaseObject : PooledObject
 
     protected virtual void ObjectIdle()
     {
+        if (isHavingTargetPosition)
+        {
+            MoveToTargetPosition();
+        }
         idleCountDown -= Time.deltaTime;
         if (idleCountDown <= 0f)
         {
@@ -270,11 +276,25 @@ public class BaseObject : PooledObject
     protected virtual void WhileObjectDie() { }
 
     //manager call - this function is called by manager or by player control
-    public void SetMovePosition(Vector3 _targetPosition)
+    //when hero is busy (like being stun, or attacking) it can not move to the target position instantly
+    //instead, it just add the action to the queue
+    public void SetTargetMovePosition(Vector3 _targetPosition)
     {
         targetPosition = _targetPosition;
+        if (GetObjectState() == ObjectState.Run)
+        {
+            MoveToTargetPosition();
+        } else
+        {
+            isHavingTargetPosition = true;
+        }
+    }
+
+    private void MoveToTargetPosition()
+    {
         navMeshAgent.Resume();
         navMeshAgent.SetDestination(targetPosition);
+        isHavingTargetPosition = false;
         SetState(ObjectState.Run);
     }
 
@@ -346,6 +366,13 @@ public class BaseObject : PooledObject
     protected void FinnishAttackTarget()
     {
         isDamageDeal = false;
+        //action cancle. If hero is attacking and the player want to cancel it.
+        if (isHavingTargetPosition)
+        {
+            MoveToTargetPosition();
+            return;
+        }
+
         //The last check -> if enemy is attacking the cargo, while the hero is close, he should focus on the
         //hero instead. -> Might change later
         if (targetObject != null && targetObject.objectState != ObjectState.Die && !IsTargetChanged() && IsTargetInRange())

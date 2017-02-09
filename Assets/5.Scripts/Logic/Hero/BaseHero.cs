@@ -103,7 +103,7 @@ public class BaseHero : BaseObject {
     //Need a better function name.
     protected void OnHeroVeryFarFromCargo()
     {
-        SetMovePosition(cargoKart.transform.position);
+        SetTargetMovePosition(cargoKart.transform.position);
     }
 
     public override void OnObjectDie()

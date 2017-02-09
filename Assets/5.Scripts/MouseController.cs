@@ -83,7 +83,7 @@ public class MouseController : BaseManager
                         case "Ground":
                             if (currentlySelectedHero != null)
                             {
-                                currentlySelectedHero.SetMovePosition(hit.point);
+                                currentlySelectedHero.SetTargetMovePosition(hit.point);
                                 SetMovementMark(hit.point);
                             }
                             break;
