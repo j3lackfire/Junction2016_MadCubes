@@ -32,7 +32,6 @@ public class CargoKart : BaseObject {
     [SerializeField]
     private bool isBeingActivated = false; //boolean to save performance.
 
-
     public override ObjectType GetObjectType()
     {
         return ObjectType.CargoKart;

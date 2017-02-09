@@ -106,7 +106,7 @@ public class BaseProjectile : PooledObject {
 
     protected bool IsTargetChange() //because of pooling
     {
-        if (targetObject == null || targetObject.objectState == ObjectState.Die || targetObject.id != targetID)
+        if (targetObject == null || targetObject.GetObjectState() == ObjectState.Die || targetObject.id != targetID)
         {
             return true;
         }

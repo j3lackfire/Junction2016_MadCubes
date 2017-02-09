@@ -45,7 +45,7 @@ public class FireHero : BaseHero {
         attackCountUp += Time.deltaTime;
         if (attackCountUp >= timeToDealDamage)
         {
-            if (targetObject == null || targetObject.objectState == ObjectState.Die || IsTargetChanged())
+            if (targetObject == null || targetObject.GetObjectState() == ObjectState.Die || IsTargetChanged())
             {
                 targetObject = objectManager.RequestTarget(this);
                 if (targetObject == null)

@@ -269,7 +269,7 @@ MonoBehaviour:
   objectData:
     level: 0
     moveSpeed: 8
-    baseMaxHealth: 200
+    baseMaxHealth: 400
     baseDamage: 20
     attackRange: 10
     respawnTime: 0
@@ -280,7 +280,7 @@ MonoBehaviour:
     damange: 20
     health: 0
     sight: 0
-    currentSpecialCountDown: 0
+    currentSpecialCoolDown: 0
   isEnemy: 0
   objectState: 0
 --- !u!114 &11483312

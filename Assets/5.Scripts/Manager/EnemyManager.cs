@@ -138,14 +138,14 @@ public class EnemyManager : ObjectManager {
         {
             if (((heroList[i].transform.position
                 - baseObject.transform.position).magnitude < distance) 
-                && heroList[i].objectState != ObjectState.Die)
+                && heroList[i].GetObjectState() != ObjectState.Die)
             {
                 returnObject = heroList[i];
                 distance = (heroList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
         BaseObject cargo = Directors.instance.playerManager.GetCargoKart();
-        if (cargo == null || cargo.objectState == ObjectState.Die)
+        if (cargo == null || cargo.GetObjectState() == ObjectState.Die)
         {
             return returnObject;
         }

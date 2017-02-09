@@ -10,11 +10,11 @@
     public static int objectChargeCountdownValue = 10;
 
     //Enemy spawner
-    public static int spawnWaterCreepOdds = 8;
-    public static float initialSpawnRate = 0.25f;
+    public static int spawnWaterCreepOdds = 6;
+    public static float initialSpawnRate = 0.45f;
     public static float increaseSpawnTime = 20;
     public static float spawnRateIncreaseValue = 0.02f;
-    public static float maxSpawnRate = 0.15f;
+    public static float maxSpawnRate = 0.25f;
 
     public static float normalCreepHealthIncreasePerLevel = 0.15f;
     public static float normalCreepDamageIncreasePerLevel = 0.15f;

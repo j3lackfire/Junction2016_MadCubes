@@ -4,8 +4,9 @@ using System.Collections;
 //Hero = player team
 public class BaseHero : BaseObject {
     //Is enemy = false ???
+    [Header("Hero fields")]
     protected float deadCountDown;
-    protected float maxDistantToCargo =25;
+    protected float maxDistantToCargo = 45;
 
     //cached object for calculating
     private CargoKart cargoKart;
@@ -24,9 +25,9 @@ public class BaseHero : BaseObject {
         objectData.currentSpecialCoolDown = objectData.specialCoolDown;
     }
 
-    public override void DoUpdate()
+    protected override void AdditionalUpdateFunction()
     {
-        base.DoUpdate();
+        base.AdditionalUpdateFunction();
         ValidateHeroDistanceToCargo();
         manaIndicationCircle.DoUpdate();
     }
@@ -37,6 +38,11 @@ public class BaseHero : BaseObject {
     //Check if the hero is too far away from the cargo or not. If so, move him back
     private void ValidateHeroDistanceToCargo()
     {
+        if (Directors.instance.GetBattleState() != BattleState.Battling)
+        {
+            return;
+        }
+
         validateHeroDistanceCheckCount--;
         if (validateHeroDistanceCheckCount <= 0 
             && objectState != ObjectState.Die 

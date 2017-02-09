@@ -23,7 +23,7 @@ public class BaseObject : PooledObject
 
     //public variables (for other unit to check
     public bool isEnemy;
-    public ObjectState objectState;
+    protected ObjectState objectState;
 
     //Private variables, mostly for flagging and checking 
     protected float idleCountDown; //The amount of frame to check for new target when idle
@@ -42,7 +42,9 @@ public class BaseObject : PooledObject
 
     public virtual ProjectileType GetProjectileType() { return ProjectileType.Invalid; }
 
-    public virtual CorpseType GetCorpseType() { return CorpseType.Invalid; } 
+    public virtual CorpseType GetCorpseType() { return CorpseType.Invalid; }
+
+    public ObjectState GetObjectState() { return objectState;}
 
     public virtual void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
@@ -103,6 +105,7 @@ public class BaseObject : PooledObject
     }
 
     //Update is called every frame by this object manager.
+    //DON'T OVERRIDE THIS UNLESS CARGO KART!!!.
     public virtual void DoUpdate()
     {
         switch (objectState)
@@ -129,14 +132,7 @@ public class BaseObject : PooledObject
                 WhileObjectDie();
                 break;
         }
-        //Make the special skill countdown correctly
-        UpdateSpecialCountDown();
-        //Regen the object's health.
-        RegenHealth();
-        //update animator wrapper to make animation run correctly
-        animatorWrapper.DoUpdate();
-        //update the renderer because of things....
-        objectRenderer.DoUpdateRenderer();
+        AdditionalUpdateFunction();
     }
 
     //What should this object do when a state is changed ????
@@ -185,6 +181,18 @@ public class BaseObject : PooledObject
                 break;
         }
         objectState = state;
+    }
+
+    protected virtual void AdditionalUpdateFunction()
+    {
+        //Make the special skill countdown correctly
+        UpdateSpecialCountDown();
+        //Regen the object's health.
+        RegenHealth();
+        //update animator wrapper to make animation run correctly
+        animatorWrapper.DoUpdate();
+        //update the renderer because of things....
+        objectRenderer.DoUpdateRenderer();
     }
 
     protected virtual void ObjectIdle()
