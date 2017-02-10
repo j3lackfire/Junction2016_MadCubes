@@ -22,12 +22,6 @@ public class WaterHero : BaseHero {
         return CorpseType.Water_Creep_Corpse;
     }
 
-    protected override void ObjectAttack()
-    {
-        base.ObjectAttack();
-    }
-
-
     protected override void DealDamageToTarget()
     {
         if (targetObject != null)

@@ -36,6 +36,18 @@ public class BaseHero : BaseObject {
         manaIndicationCircle.DoUpdate();
     }
 
+    protected override void ObjectAttack()
+    {
+        //Even if the object is attacking, order it to move will cancle the attack.
+        //need to have this to make the game feel responsive.
+        if (isHavingTargetPosition)
+        {
+            MoveToTargetPosition();
+            return;
+        }
+        base.ObjectAttack();
+    }
+
     //private cached value, only used for the function beloew.
     private int validateHeroDistanceCheckCount = 20;
     //Only call this functinon every 10 or something frame to save performance.

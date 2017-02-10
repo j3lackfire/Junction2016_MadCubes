@@ -41,7 +41,13 @@ public class FireHero : BaseHero {
 
     protected override void ObjectAttack()
     {
-        //timeToDealDamage = 0.3f;
+        //Even if the object is attacking, order it to move will cancle the attack.
+        //need to have this to make the game feel responsive.
+        if (isHavingTargetPosition)
+        {
+            MoveToTargetPosition();
+            return;
+        }
         attackCountUp += Time.deltaTime;
         if (attackCountUp >= timeToDealDamage)
         {

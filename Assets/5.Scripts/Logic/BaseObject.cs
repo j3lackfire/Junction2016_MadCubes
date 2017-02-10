@@ -34,7 +34,7 @@ public class BaseObject : PooledObject
     protected BaseObject targetObject;
     
     protected Vector3 targetPosition;
-    private bool isHavingTargetPosition;
+    protected bool isHavingTargetPosition;
     //The position of the target object is always changing. It would hurt performance 
     //if we update the target position every frame.
     protected int objectChargeCountdown;
@@ -225,6 +225,11 @@ public class BaseObject : PooledObject
 
     protected virtual void ObjectCharging()
     {
+        if (isHavingTargetPosition)
+        {
+            MoveToTargetPosition();
+            return;
+        }
         //target changed mean target is die and is respawned as another object by the pool system.
         if (IsTargetChanged())
         {
@@ -290,7 +295,7 @@ public class BaseObject : PooledObject
         }
     }
 
-    private void MoveToTargetPosition()
+    protected void MoveToTargetPosition()
     {
         navMeshAgent.Resume();
         navMeshAgent.SetDestination(targetPosition);
