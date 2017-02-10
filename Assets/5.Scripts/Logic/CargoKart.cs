@@ -141,8 +141,6 @@ public class CargoKart : BaseObject {
             if (IsHeroInActivationRange())
             {
                 isBeingActivated = true;
-                Debug.Log("<color=#abd125> Hero is in my range !!!!</color>", this);
-                //Debug.Break();
             }
         } else
         {

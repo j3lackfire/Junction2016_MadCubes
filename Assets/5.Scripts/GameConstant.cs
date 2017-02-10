@@ -5,7 +5,7 @@
     public static float cameraRotateAngle = 45f;
 
     public static float idleCheckFrequency = 0.25f;
-    public static float runningReachingDistance = 0.5f;
+    public static float runningReachingDistance = 0.75f;
 
     public static int objectChargeCountdownValue = 10;
 

@@ -52,7 +52,7 @@ public class MouseController : BaseManager
                         Debug.Log("<color=red>This object is not tagged  !!!!!  </color>");
                         break;
                     default:
-                        Debug.Log("<color=red>defa  5ult case ??? ????</color>");
+                        Debug.Log("<color=red>default case ??? ???? </color>" + hit.transform.tag);
                         break;
                 }
             }

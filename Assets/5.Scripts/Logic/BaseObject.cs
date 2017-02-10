@@ -221,11 +221,12 @@ public class BaseObject : PooledObject
                 {
                     if (followingAlly != null && followingAlly.CanTargetObject())
                     {
-                        if ((followingAlly.transform.position - transform.position).magnitude >= GameConstant.runningReachingDistance * 2)
+                        if ((followingAlly.transform.position - transform.position).magnitude >= GameConstant.runningReachingDistance * 6)
                         {
                             SetTargetMovePosition(followingAlly.transform.position, true);
                         }
-                    } else
+                    }
+                    else
                     {
                         isFollowingAlly = false;
                     }
@@ -234,20 +235,27 @@ public class BaseObject : PooledObject
         }
     }
 
+    [HideInInspector] //this to make sure the object follow other smoothly
+    private int followAllyCountDown = 20; 
+
     protected virtual void ObjectRunning()
     {
+        //TODO: I'm not very sure about this. This could hurt performance
+        if (isFollowingAlly)
+        {
+            followAllyCountDown--;
+            if (followAllyCountDown <= 0)
+            {
+                followAllyCountDown = 20;
+                if ((followingAlly.transform.position - targetPosition).magnitude >= GameConstant.runningReachingDistance * 2) {
+                    SetTargetMovePosition(followingAlly.transform.position, true);
+                }
+            }
+        }
+        //Old function. Working pretty well :/
         if ((transform.position - targetPosition).magnitude <= GameConstant.runningReachingDistance)
         {
             SetState(ObjectState.Idle);
-            //navMeshAgent.Stop();
-            //if (isFollowingAlly &&
-            //    (followingAlly.transform.position - transform.position).magnitude >= GameConstant.runningReachingDistance * 2)
-            //{
-            //    SetTargetMovePosition(followingAlly.transform.position, true);
-            //} else
-            //{
-            //    SetState(ObjectState.Idle);
-            //}
         }
     }
 
