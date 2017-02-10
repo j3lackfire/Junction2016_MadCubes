@@ -6,7 +6,7 @@ public class BaseHero : BaseObject {
     //Is enemy = false ???
     [Header("Hero fields")]
     protected float deadCountDown;
-    protected float maxDistantToCargo = 45;
+    protected float maxDistantToCargo = 55;
 
     //cached object for calculating
     private CargoKart cargoKart;

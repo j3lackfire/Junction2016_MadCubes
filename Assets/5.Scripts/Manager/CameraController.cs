@@ -57,6 +57,7 @@ public class CameraController : BaseManager {
                 AutomaticFollowCargo();
                 break;
             case BattleState.Finish:
+                WhileBattlePrepare();
                 break;
             default:
                 Debug.Log("<color=red>CAMERA MANANGER - battle state not defined !!!!</color>" + director.GetBattleState());
@@ -89,23 +90,6 @@ public class CameraController : BaseManager {
     {
         transform.position = Vector3.Lerp(transform.position, new Vector3(targetPosition.x, transform.position.y, targetPosition.z), cameraSpeed * Time.deltaTime);
     }
-
-    //private float GetFurthestHeroDistanceToCamera()
-    //{
-    //    //TODO: Can be optimized by cached all of the hero at the start of the prepare phase
-    //    List<BaseHero> heroList = playerManager.heroList;
-    //    float furthestDistance = -1f;
-    //    Vector3 cameraPos = new Vector3(transform.position.x, 0, transform.position.z);
-    //    for (int i = 0; i < heroList.Count; i ++)
-    //    {
-    //        float distance = (heroList[i].transform.position - cameraPos).magnitude;
-    //        if (distance > furthestDistance)
-    //        {
-    //            furthestDistance = distance;
-    //        }
-    //    }
-    //    return furthestDistance;
-    //}
 
     //need to consider in the screen ratio which is not SQUARE screen
     private float GetFurthestScreenDistanceToCamera()
@@ -203,7 +187,28 @@ public class CameraController : BaseManager {
         {
             cargo = playerManager.GetCargoKart().gameObject;
         }
-        SetCameraPosition(cargo.transform.position + cargoOffsetPosition);
+        //SetCameraPosition(cargo.transform.position + cargoOffsetPosition);
+        SetCameraPosition(GetHeroesAndCargoMiddlePosition());
+    }
+
+    private Vector3 GetHeroesAndCargoMiddlePosition()
+    {
+        List<BaseHero> heroList = playerManager.heroList;
+        //calculate the middle point of all the heroes
+        Vector3 cameraPosition = Vector3.zero;
+        int aliveHeroCount = 0;
+        for (int i = 0; i < heroList.Count; i++)
+        {
+            if (heroList[i].GetObjectState() != ObjectState.Die)
+            {
+                cameraPosition += heroList[i].transform.position;
+                aliveHeroCount++;
+            }
+        }
+        cameraPosition += cargo.transform.position + cargoOffsetPosition;
+        aliveHeroCount++;
+        cameraPosition /= aliveHeroCount;
+        return cameraPosition;
     }
 }
 
