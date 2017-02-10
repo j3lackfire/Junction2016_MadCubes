@@ -24,11 +24,14 @@ public class BaseObject : PooledObject
     //public variables (for other unit to check
     public bool isEnemy;
     protected ObjectState objectState;
-
+    
     //Private variables, mostly for flagging and checking 
     protected float idleCountDown; //The amount of frame to check for new target when idle
     protected bool isDamageDeal;
     protected float attackCountUp;
+
+    protected bool isFollowingAlly;
+    protected BaseObject followingAlly;
     //[SerializeField]
     protected long targetID;
     protected BaseObject targetObject;
@@ -60,6 +63,7 @@ public class BaseObject : PooledObject
         SetState(ObjectState.Idle);
         isDamageDeal = false;
         isHavingTargetPosition = false;
+        isFollowingAlly = false;
         objectChargeCountdown = GameConstant.objectChargeCountdownValue;
         idleCountDown = GameConstant.idleCheckFrequency;
         healthRegenCountUp = 0f;
@@ -202,6 +206,7 @@ public class BaseObject : PooledObject
         if (isHavingTargetPosition)
         {
             MoveToTargetPosition();
+            return;
         }
         idleCountDown -= Time.deltaTime;
         if (idleCountDown <= 0f)
@@ -209,7 +214,22 @@ public class BaseObject : PooledObject
             idleCountDown = GameConstant.idleCheckFrequency;
             if (objectManager.RequestTarget(this) != null)
             {
-                ChargeAtObject(objectManager.RequestTarget(this));
+                ChargeAtObject(objectManager.RequestTarget(this), true);
+            } else
+            {
+                if (isFollowingAlly)
+                {
+                    if (followingAlly != null && followingAlly.CanTargetObject())
+                    {
+                        if ((followingAlly.transform.position - transform.position).magnitude >= GameConstant.runningReachingDistance * 2)
+                        {
+                            SetTargetMovePosition(followingAlly.transform.position, true);
+                        }
+                    } else
+                    {
+                        isFollowingAlly = false;
+                    }
+                }
             }
         }
     }
@@ -218,18 +238,21 @@ public class BaseObject : PooledObject
     {
         if ((transform.position - targetPosition).magnitude <= GameConstant.runningReachingDistance)
         {
-            //navMeshAgent.Stop();
             SetState(ObjectState.Idle);
+            //navMeshAgent.Stop();
+            //if (isFollowingAlly &&
+            //    (followingAlly.transform.position - transform.position).magnitude >= GameConstant.runningReachingDistance * 2)
+            //{
+            //    SetTargetMovePosition(followingAlly.transform.position, true);
+            //} else
+            //{
+            //    SetState(ObjectState.Idle);
+            //}
         }
     }
 
     protected virtual void ObjectCharging()
     {
-        if (isHavingTargetPosition)
-        {
-            MoveToTargetPosition();
-            return;
-        }
         //target changed mean target is die and is respawned as another object by the pool system.
         if (IsTargetChanged())
         {
@@ -283,16 +306,29 @@ public class BaseObject : PooledObject
     //manager call - this function is called by manager or by player control
     //when hero is busy (like being stun, or attacking) it can not move to the target position instantly
     //instead, it just add the action to the queue
-    public void SetTargetMovePosition(Vector3 _targetPosition)
+    //is local call: is this function called locally or externally
+    public void SetTargetMovePosition(Vector3 _targetPosition, bool isLocalCall)
     {
+        if (!isLocalCall)
+        {
+            isFollowingAlly = false;
+        }
         targetPosition = _targetPosition;
-        if (GetObjectState() == ObjectState.Run)
+        if (CanExecuteMoveOrder())
         {
             MoveToTargetPosition();
         } else
         {
             isHavingTargetPosition = true;
         }
+    }
+
+    //If not, the move order must be queued up.
+    protected virtual bool CanExecuteMoveOrder()
+    {
+        return GetObjectState() == ObjectState.Run
+            || GetObjectState() == ObjectState.Charge
+            || GetObjectState() == ObjectState.Idle;
     }
 
     protected void MoveToTargetPosition()
@@ -304,8 +340,12 @@ public class BaseObject : PooledObject
     }
 
     //manager call - this function is called by manager or by player control
-    public void ChargeAtObject(BaseObject target)
+    public void ChargeAtObject(BaseObject target, bool isLocalCall)
     {
+        if (!isLocalCall)
+        {
+            isFollowingAlly = false;
+        }
         if (target == null)
         {
             //just let it be idle
@@ -319,6 +359,14 @@ public class BaseObject : PooledObject
             navMeshAgent.SetDestination(targetPosition);
             SetState(ObjectState.Charge);
         }
+    }
+
+    //Make object run after an ally.
+    public void SetFollowAlly(BaseObject allyObject)
+    {
+        followingAlly = allyObject;
+        SetTargetMovePosition(followingAlly.transform.position, true);
+        isFollowingAlly = true;
     }
 
     protected void SetTargetObject(BaseObject _target)
@@ -393,7 +441,7 @@ public class BaseObject : PooledObject
             }
             else
             {
-                ChargeAtObject(requestedTarget);
+                ChargeAtObject(requestedTarget, true);
             }
         }
     }
@@ -402,6 +450,7 @@ public class BaseObject : PooledObject
     //Implement this to make sure if you CAN NOT activate the special, you WON'T
     public virtual bool ActiveSpecial()
     {
+        isFollowingAlly = false;
         if (CanActiveSpecial())
         {
             objectData.currentSpecialCoolDown = 0;
@@ -496,15 +545,20 @@ public class BaseObject : PooledObject
 
     //tobe called by the renderer function. Hero will have this function off.
     public virtual bool AutoHideHealthBar() { return true; }
+
+    public virtual bool CanTargetObject()
+    {
+        return GetObjectState() != ObjectState.Die;
+    }
 }
 
 public enum ObjectState
 {
-    Idle,
-    Run,
-    Charge,
-    Attack,
-    Stun,
-    Special,
-    Die
+    Idle, //standing in one place and not doing anything
+    Run, //runnnnnn
+    Charge, //running to attack a target
+    Attack, //attack target
+    Stun, //object is stunned and can't do anything
+    Special, //is doing special spell
+    Die //die 
 }

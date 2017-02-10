@@ -41,17 +41,10 @@ public class FireHero : BaseHero {
 
     protected override void ObjectAttack()
     {
-        //Even if the object is attacking, order it to move will cancle the attack.
-        //need to have this to make the game feel responsive.
-        if (isHavingTargetPosition)
-        {
-            MoveToTargetPosition();
-            return;
-        }
         attackCountUp += Time.deltaTime;
         if (attackCountUp >= timeToDealDamage)
         {
-            if (targetObject == null || targetObject.GetObjectState() == ObjectState.Die || IsTargetChanged())
+            if (targetObject == null || !targetObject.CanTargetObject() || IsTargetChanged())
             {
                 targetObject = objectManager.RequestTarget(this);
                 if (targetObject == null)

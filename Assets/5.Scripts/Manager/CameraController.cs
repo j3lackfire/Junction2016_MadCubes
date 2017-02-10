@@ -170,7 +170,7 @@ public class CameraController : BaseManager {
         int aliveHeroCount = 0;
         for (int i = 0; i < heroList.Count; i++)
         {
-            if (heroList[i].GetObjectState() != ObjectState.Die)
+            if (heroList[i].CanTargetObject())
             {
                 cameraPosition += heroList[i].transform.position;
                 aliveHeroCount++;
@@ -199,7 +199,7 @@ public class CameraController : BaseManager {
         int aliveHeroCount = 0;
         for (int i = 0; i < heroList.Count; i++)
         {
-            if (heroList[i].GetObjectState() != ObjectState.Die)
+            if (heroList[i].CanTargetObject())
             {
                 cameraPosition += heroList[i].transform.position;
                 aliveHeroCount++;

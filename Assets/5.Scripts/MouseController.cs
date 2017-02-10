@@ -74,16 +74,23 @@ public class MouseController : BaseManager
                             if (currentlySelectedHero != null)
                             {
                                 BaseObject baseTarget = hit.transform.gameObject.GetComponent<BaseObject>();
-                                currentlySelectedHero.ChargeAtObject(baseTarget);
+                                currentlySelectedHero.ChargeAtObject(baseTarget, false);
                                 SetAttackMark(baseTarget.gameObject);
                             }
                             break;
                         case "Hero":
+                        case "Objectives":
+                            if (currentlySelectedHero != null)
+                            {
+                                BaseObject baseTarget = hit.transform.gameObject.GetComponent<BaseObject>();
+                                currentlySelectedHero.SetFollowAlly(baseTarget);
+                                SetMovementMark(hit.point);
+                            }
                             break;
                         case "Ground":
                             if (currentlySelectedHero != null)
                             {
-                                currentlySelectedHero.SetTargetMovePosition(hit.point);
+                                currentlySelectedHero.SetTargetMovePosition(hit.point, false);
                                 SetMovementMark(hit.point);
                             }
                             break;

@@ -119,7 +119,7 @@ public class EnemyManager : ObjectManager {
         creep.transform.position = enemySpawnPos[Random.Range(0, enemySpawnPos.Count)].transform.position;
         creep.Init(this, true, currentSpawnLevel);
         objectList.Add(creep);
-        creep.ChargeAtObject(RequestTarget(creep));
+        creep.ChargeAtObject(RequestTarget(creep), false);
         creep.transform.parent = transform;
         return creep;
     }
@@ -137,15 +137,15 @@ public class EnemyManager : ObjectManager {
         for (int i = 0; i < heroList.Count; i ++)
         {
             if (((heroList[i].transform.position
-                - baseObject.transform.position).magnitude < distance) 
-                && heroList[i].GetObjectState() != ObjectState.Die)
+                - baseObject.transform.position).magnitude < distance)
+                && heroList[i].CanTargetObject())
             {
                 returnObject = heroList[i];
                 distance = (heroList[i].transform.position - baseObject.transform.position).magnitude;
             }
         }
-        BaseObject cargo = Directors.instance.playerManager.GetCargoKart();
-        if (cargo == null || cargo.GetObjectState() == ObjectState.Die)
+        BaseObject cargo = director.playerManager.GetCargoKart();
+        if (cargo == null || !cargo.CanTargetObject())
         {
             return returnObject;
         }

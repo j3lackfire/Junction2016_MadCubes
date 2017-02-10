@@ -6,7 +6,7 @@ public class BaseHero : BaseObject {
     //Is enemy = false ???
     [Header("Hero fields")]
     protected float deadCountDown;
-    protected float maxDistantToCargo = 55;
+    protected float maxDistantToCargo = 105;
 
     //cached object for calculating
     private CargoKart cargoKart;
@@ -34,18 +34,6 @@ public class BaseHero : BaseObject {
         base.AdditionalUpdateFunction();
         ValidateHeroDistanceToCargo();
         manaIndicationCircle.DoUpdate();
-    }
-
-    protected override void ObjectAttack()
-    {
-        //Even if the object is attacking, order it to move will cancle the attack.
-        //need to have this to make the game feel responsive.
-        if (isHavingTargetPosition)
-        {
-            MoveToTargetPosition();
-            return;
-        }
-        base.ObjectAttack();
     }
 
     //private cached value, only used for the function beloew.
@@ -88,6 +76,12 @@ public class BaseHero : BaseObject {
         //return Mathf.Sqrt(distanceX * distanceX + distanceZ * distanceZ);
     }
 
+    protected override bool CanExecuteMoveOrder()
+    {
+        return base.CanExecuteMoveOrder() 
+            || GetObjectState() == ObjectState.Attack;
+    }
+
     public override bool ActiveSpecial()
     {
         if (CanActiveSpecial())
@@ -115,7 +109,7 @@ public class BaseHero : BaseObject {
     //Need a better function name.
     protected void OnHeroVeryFarFromCargo()
     {
-        SetTargetMovePosition(cargoKart.transform.position);
+        SetTargetMovePosition(cargoKart.transform.position, true);
     }
 
     public override void OnObjectDie()

@@ -25,7 +25,7 @@ public class BaseUnit : BaseObject {
             if (isEnemy && targetObject.GetObjectType() == ObjectType.CargoKart &&
                 objectManager.RequestTarget(this).GetObjectType() != ObjectType.CargoKart)
             {
-                ChargeAtObject(objectManager.RequestTarget(this));
+                ChargeAtObject(objectManager.RequestTarget(this), true);
             }
             else
             {
