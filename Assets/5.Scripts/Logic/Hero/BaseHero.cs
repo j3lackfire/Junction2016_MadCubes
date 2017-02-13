@@ -6,10 +6,10 @@ public class BaseHero : BaseObject {
     //Is enemy = false ???
     [Header("Hero fields")]
     protected float deadCountDown;
-    protected float maxDistantToCargo = 105;
+    //The distance to the center point of the camera
+    protected float maxDistantToCenterPoint = 45;
 
     //cached object for calculating
-    private CargoKart cargoKart;
 
     public HighLightCircle manaIndicationCircle;
     private float manaCircleStartSize;
@@ -20,7 +20,6 @@ public class BaseHero : BaseObject {
     public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
     {
         base.Init(_objectManager, isEnemyTeam, objectLevel);
-        cargoKart = Directors.instance.playerManager.GetCargoKart();
         manaIndicationCircle.Init();
         manaIndicationCircle.SetTargetGameObject(this.gameObject);
         manaCircleStartSize = manaIndicationCircle.transform.localScale.x;
@@ -50,7 +49,7 @@ public class BaseHero : BaseObject {
         validateHeroDistanceCheckCount--;
         if (validateHeroDistanceCheckCount <= 0 
             && objectState != ObjectState.Die 
-            && GetScreenDistanceToCargo() >= maxDistantToCargo)
+            && GetScreenDistanceToCenterPoint() >= maxDistantToCenterPoint)
         {
             OnHeroVeryFarFromCargo();
             validateHeroDistanceCheckCount = 20;
@@ -63,12 +62,13 @@ public class BaseHero : BaseObject {
     //}
 
     //because the screen is ot square so we need to calculate accordingly
-    private float GetScreenDistanceToCargo()
+    private float GetScreenDistanceToCenterPoint()
     {
-        float distanceX = transform.position.x - cargoKart.transform.position.x;
+        Vector3 centerPosition = cameraController.transform.position;
+        float distanceX = transform.position.x - centerPosition.x;
         distanceX = distanceX < 0 ? -distanceX : distanceX; //make sure the value is not negative
 
-        float distanceZ = transform.position.z - cargoKart.transform.position.z;
+        float distanceZ = transform.position.z - centerPosition.z;
         distanceZ = distanceZ < 0 ? -distanceZ : distanceZ; //make sure the value is not negative
         distanceZ *= screenAspectRatio;
         //this way, hero can go further diagonally.
@@ -109,7 +109,7 @@ public class BaseHero : BaseObject {
     //Need a better function name.
     protected void OnHeroVeryFarFromCargo()
     {
-        SetTargetMovePosition(cargoKart.transform.position, true);
+        SetTargetMovePosition(playerManager.GetCargoKart().transform.position, true);
     }
 
     public override void OnObjectDie()

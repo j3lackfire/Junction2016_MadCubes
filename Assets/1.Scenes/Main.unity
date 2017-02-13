@@ -902,6 +902,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19538916, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
+      propertyPath: m_AutoTraverseOffMeshLink
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a5c08d0cc1d7ae34c8ce7c7e79d9f0a3, type: 2}
   m_IsPrefabParent: 0
