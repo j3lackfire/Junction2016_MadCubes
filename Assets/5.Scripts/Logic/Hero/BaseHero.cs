@@ -2,7 +2,7 @@
 using System.Collections;
 
 //Hero = player team
-public class BaseHero : BaseObject {
+public class BaseHero : BaseUnit {
     //Is enemy = false ???
     [Header("Hero fields")]
     protected float deadCountDown;
@@ -76,9 +76,9 @@ public class BaseHero : BaseObject {
         //return Mathf.Sqrt(distanceX * distanceX + distanceZ * distanceZ);
     }
 
-    protected override bool CanExecuteMoveOrder()
+    protected override bool CanExecuteOrder()
     {
-        return base.CanExecuteMoveOrder() 
+        return base.CanExecuteOrder() 
             || GetObjectState() == ObjectState.Attack;
     }
 
@@ -109,7 +109,7 @@ public class BaseHero : BaseObject {
     //Need a better function name.
     protected void OnHeroVeryFarFromCargo()
     {
-        SetTargetMovePosition(playerManager.GetCargoKart().transform.position, true);
+        SetTargetMovePosition(playerManager.GetCargoKart().transform.position);
     }
 
     public override void OnObjectDie()

@@ -165,9 +165,15 @@ public class CameraController : BaseManager {
     {
         //TODO: Can be optimized by cached all of the hero at the start of the prepare phase
         List<BaseHero> heroList = playerManager.heroList;
+
+        if (heroList.Count == 0)
+        {
+            return transform.position;
+        }
         //calculate the middle point of all the heroes
         Vector3 cameraPosition = Vector3.zero;
         int aliveHeroCount = 0;
+        
         for (int i = 0; i < heroList.Count; i++)
         {
             if (heroList[i].CanTargetObject())

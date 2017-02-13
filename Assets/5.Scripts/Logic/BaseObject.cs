@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class BaseObject : PooledObject
 {
     //COMPONENTS
-    protected NavMeshAgent navMeshAgent;
+    
     protected ObjectRenderer objectRenderer;
     [SerializeField] //maybe read data from JSON later for easier configuration ?
     public ObjectData objectData = new ObjectData();
@@ -13,7 +13,6 @@ public class BaseObject : PooledObject
     protected AnimatorWrapper animatorWrapper;
     protected Animator childAnimator;
     //MANAGERS
-    //[SerializeField]
     protected ObjectManager objectManager; //Object's manager, for team specific action
     protected PlayerManager playerManager; //For player's team function, like get nearest hero
     protected EnemyManager enemyManager; //For enemy's team function, 
@@ -21,7 +20,7 @@ public class BaseObject : PooledObject
     protected CameraController cameraController; //need for screen shake
     protected MouseController mouseController; //need for hero only, might change later though
 
-    //public variables (for other unit to check
+    //public variables (for other unit to check)
     public bool isEnemy;
     protected ObjectState objectState;
     
@@ -30,17 +29,9 @@ public class BaseObject : PooledObject
     protected bool isDamageDeal;
     protected float attackCountUp;
 
-    protected bool isFollowingAlly;
-    protected BaseObject followingAlly;
     //[SerializeField]
     protected long targetID;
     protected BaseObject targetObject;
-    
-    protected Vector3 targetPosition;
-    protected bool isHavingTargetPosition;
-    //The position of the target object is always changing. It would hurt performance 
-    //if we update the target position every frame.
-    protected int objectChargeCountdown;
 
     public virtual ObjectType GetObjectType() { return ObjectType.Invalid; }
 
@@ -62,9 +53,6 @@ public class BaseObject : PooledObject
         UpdateStatsByLevel(objectLevel);
         SetState(ObjectState.Idle);
         isDamageDeal = false;
-        isHavingTargetPosition = false;
-        isFollowingAlly = false;
-        objectChargeCountdown = GameConstant.objectChargeCountdownValue;
         idleCountDown = GameConstant.idleCheckFrequency;
         healthRegenCountUp = 0f;
     }
@@ -81,11 +69,6 @@ public class BaseObject : PooledObject
 
     protected virtual void PrepareComponent()
     {
-        if (navMeshAgent == null)
-        {
-            navMeshAgent = GetComponent<NavMeshAgent>();
-        }
-        navMeshAgent.speed = objectData.moveSpeed;
         childAnimator = GetComponentInChildren<Animator>();
         animatorWrapper = new AnimatorWrapper(childAnimator);
 
@@ -98,8 +81,7 @@ public class BaseObject : PooledObject
         objectRenderer.OnParentObjectRespawn();
     }
 
-    //TODO: make this function read data externally
-    //TODO: maybe make object stats not depend on level. It is very confusing for the player.
+    //TODO: Seriously need to consider this thing again
     public virtual void UpdateStatsByLevel(int level = 1)
     {
         objectData.level = level;
@@ -138,54 +120,13 @@ public class BaseObject : PooledObject
                 WhileObjectDie();
                 break;
         }
+        //Main core logic is different between Building and units.
         AdditionalUpdateFunction();
     }
 
     //What should this object do when a state is changed ????
-    protected void SetState(ObjectState state)
+    protected virtual void SetState(ObjectState state)
     {
-        switch (state)
-        {
-            case ObjectState.Idle:
-                //Hot fix, so that when the hero respawn, he will not move to his previous position.
-                //Is this one a hot fix or a neccessary logic step ????
-                navMeshAgent.Stop();
-                navMeshAgent.SetDestination(transform.position);
-
-                //Another hot fix, to fix the wrong rotation of object when finishing an animation
-                //There is still a weird rotation sometime but I can not catch it all the time :/
-                //Debug.Log("Local Rotation " + objectRenderer.gameObject.transform.localRotation.ToString());
-                objectRenderer.gameObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
-                //Debug.Log("Local Rotation after set - " + objectRenderer.gameObject.transform.localRotation.ToString());
-
-                animatorWrapper.AddTriggerToQueue("EnterIdleAnimation");
-                break;
-            case ObjectState.Run:
-            case ObjectState.Charge:
-                //need this one so the object will not just repeat the run animation while running
-                if (objectState != ObjectState.Run && objectState != ObjectState.Charge)
-                {
-                    animatorWrapper.AddTriggerToQueue("EnterMovementAnimation");
-                }
-                break;
-            case ObjectState.Attack:
-                navMeshAgent.Stop();
-                animatorWrapper.AddTriggerToQueue("EnterAttackAnimation");
-                break;
-            case ObjectState.Stun:
-                break;
-            case ObjectState.Special:
-                navMeshAgent.Stop();
-                animatorWrapper.AddTriggerToQueue("EnterAttackAnimation");
-                break;
-            case ObjectState.Die:
-                //Maybe special case here ? to add the dead effect here and other stuffs.
-                
-                //Object die while moving, when respawned will have a weird position offset.
-                //This is to fix that bug
-                objectRenderer.OnParentObjectDie();
-                break;
-        }
         objectState = state;
     }
 
@@ -201,88 +142,12 @@ public class BaseObject : PooledObject
         objectRenderer.DoUpdateRenderer();
     }
 
-    protected virtual void ObjectIdle()
-    {
-        if (isHavingTargetPosition)
-        {
-            MoveToTargetPosition();
-            return;
-        }
-        idleCountDown -= Time.deltaTime;
-        if (idleCountDown <= 0f)
-        {
-            idleCountDown = GameConstant.idleCheckFrequency;
-            if (objectManager.RequestTarget(this) != null)
-            {
-                ChargeAtObject(objectManager.RequestTarget(this), true);
-            } else
-            {
-                if (isFollowingAlly)
-                {
-                    if (followingAlly != null && followingAlly.CanTargetObject())
-                    {
-                        if ((followingAlly.transform.position - transform.position).magnitude >= GameConstant.runningReachingDistance * 6)
-                        {
-                            SetTargetMovePosition(followingAlly.transform.position, true);
-                        }
-                    }
-                    else
-                    {
-                        isFollowingAlly = false;
-                    }
-                }
-            }
-        }
-    }
+    protected virtual void ObjectIdle() {}
 
-    //[HideInInspector] //this to make sure the object follow other smoothly
-    //private int followAllyCountDown = 20; 
-
-    protected virtual void ObjectRunning()
-    {
-        //TODO: I'm not very sure about this. This could hurt performance
-        //It's does not follow very smoothly with this function, but I guess this is still OK
-        //if (isFollowingAlly)
-        //{
-        //    followAllyCountDown--;
-        //    if (followAllyCountDown <= 0)
-        //    {
-        //        followAllyCountDown = 20;
-        //        if ((followingAlly.transform.position - targetPosition).magnitude >= GameConstant.runningReachingDistance * 2) {
-        //            SetTargetMovePosition(followingAlly.transform.position, true);
-        //        }
-        //    }
-        //}
-        //Old function. Working pretty well :/
-        if ((transform.position - targetPosition).magnitude <= GameConstant.runningReachingDistance)
-        {
-            SetState(ObjectState.Idle);
-        }
-    }
-
-    protected virtual void ObjectCharging()
-    {
-        //target changed mean target is die and is respawned as another object by the pool system.
-        if (IsTargetChanged())
-        {
-            SetState(ObjectState.Idle);
-            return;
-        }
-        if (IsTargetInRange())
-        {
-            StartAttackTarget();
-            return;
-        } 
-        
-        objectChargeCountdown--;
-        if (objectChargeCountdown <= 0)
-        {
-            objectChargeCountdown = GameConstant.objectChargeCountdownValue;
-            //set the target position again.
-            targetPosition = targetObject.transform.position;
-            navMeshAgent.SetDestination(targetPosition);
-        }
-    }
+    //Only unit should run. This method shouldn't be in base object. But it just here so both Unit and Building share the same update loop
+    protected virtual void ObjectRunning() {}
+    //Similary normal object can't run, only units.
+    protected virtual void ObjectCharging() {}
 
     protected virtual void ObjectAttack()
     {
@@ -313,70 +178,22 @@ public class BaseObject : PooledObject
     protected virtual void WhileObjectDie() { }
 
     //manager call - this function is called by manager or by player control
-    //when hero is busy (like being stun, or attacking) it can not move to the target position instantly
-    //instead, it just add the action to the queue
     //is local call: is this function called locally or externally
-    public void SetTargetMovePosition(Vector3 _targetPosition, bool isLocalCall)
-    {
-        if (!isLocalCall)
-        {
-            isFollowingAlly = false;
-        }
-        targetPosition = _targetPosition;
-        if (CanExecuteMoveOrder())
-        {
-            MoveToTargetPosition();
-        } else
-        {
-            isHavingTargetPosition = true;
-        }
-    }
+    //This used to be the just MOVE function, but I realize maybe building can be controlled and target to
+    //Like set rally poit for building.
+    //This will be the default function for mouse control interaction or manager interaction
+    public virtual void SetObjectTargetPosition(Vector3 _targetPosition, bool isLocalCall) {}
 
-    //If not, the move order must be queued up.
-    protected virtual bool CanExecuteMoveOrder()
+    //If not, the order must be queued up.
+    protected virtual bool CanExecuteOrder()
     {
         return GetObjectState() == ObjectState.Run
             || GetObjectState() == ObjectState.Charge
             || GetObjectState() == ObjectState.Idle;
     }
 
-    protected void MoveToTargetPosition()
-    {
-        navMeshAgent.Resume();
-        navMeshAgent.SetDestination(targetPosition);
-        isHavingTargetPosition = false;
-        SetState(ObjectState.Run);
-    }
-
     //manager call - this function is called by manager or by player control
-    public void ChargeAtObject(BaseObject target, bool isLocalCall)
-    {
-        if (!isLocalCall)
-        {
-            isFollowingAlly = false;
-        }
-        if (target == null)
-        {
-            //just let it be idle
-            SetState(ObjectState.Idle);
-        }
-        else
-        {
-            SetTargetObject(target);
-            targetPosition = targetObject.transform.position;
-            navMeshAgent.Resume();
-            navMeshAgent.SetDestination(targetPosition);
-            SetState(ObjectState.Charge);
-        }
-    }
-
-    //Make object run after an ally.
-    public void SetFollowAlly(BaseObject allyObject)
-    {
-        followingAlly = allyObject;
-        SetTargetMovePosition(followingAlly.transform.position, true);
-        isFollowingAlly = true;
-    }
+    public virtual void SetObjectTarget(BaseObject target, bool isLocalCall) {}
 
     protected void SetTargetObject(BaseObject _target)
     {
@@ -421,36 +238,32 @@ public class BaseObject : PooledObject
         if (targetObject != null && !IsTargetChanged())
         {
             projectileManager.CreateProjectile(GetProjectileType(), isEnemy, objectData.damange, transform.position, this, targetObject.transform.position, targetObject);
+            //deal direct damage, but I don't know if this is needed :/
             //targetObject.ReceiveDamage(10, this);
         }
     }
 
-    protected void FinnishAttackTarget()
+    protected virtual void FinnishAttackTarget()
     {
         isDamageDeal = false;
-        //action cancle. If hero is attacking and the player want to cancel it.
-        if (isHavingTargetPosition)
-        {
-            MoveToTargetPosition();
-            return;
-        }
 
         //The last check -> if enemy is attacking the cargo, while the hero is close, he should focus on the
         //hero instead. -> Might change later
-        if (targetObject != null && targetObject.objectState != ObjectState.Die && !IsTargetChanged() && IsTargetInRange())
+        if (targetObject != null && CanTargetObject() && !IsTargetChanged() && IsTargetInRange())
         {
             StartAttackTarget();
         }
         else
         {
             BaseObject requestedTarget = objectManager.RequestTarget(this);
-            if (requestedTarget == null)
+            if (requestedTarget == null || !IsTargetInRange() || !CanTargetObject() )
             {
                 SetState(ObjectState.Idle);
             }
             else
             {
-                ChargeAtObject(requestedTarget, true);
+                SetTargetObject(requestedTarget);
+                StartAttackTarget();
             }
         }
     }
@@ -459,7 +272,6 @@ public class BaseObject : PooledObject
     //Implement this to make sure if you CAN NOT activate the special, you WON'T
     public virtual bool ActiveSpecial()
     {
-        isFollowingAlly = false;
         if (CanActiveSpecial())
         {
             objectData.currentSpecialCoolDown = 0;
@@ -523,7 +335,6 @@ public class BaseObject : PooledObject
 
     protected virtual void KillObject()
     {
-        //TODO Use fucking pools man
         //Destroy(gameObject);
         ReturnToPool();
     }

@@ -520,7 +520,7 @@ MonoBehaviour:
   objectData:
     level: 0
     moveSpeed: 10
-    baseMaxHealth: 500
+    baseMaxHealth: 40
     baseDamage: 12
     attackRange: 12
     respawnTime: 1
@@ -547,7 +547,7 @@ NavMeshAgent:
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
+  m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2

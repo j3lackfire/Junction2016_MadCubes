@@ -7,6 +7,12 @@ public class WaterHero : BaseHero {
     //cached ray for attacking, because this object can attack serveral
     private Ray attackRay;
 
+    public override void Init(ObjectManager _objectManager, bool isEnemyTeam, int objectLevel)
+    {
+        base.Init(_objectManager, isEnemyTeam, objectLevel);
+        Debug.Log(objectData.damange);
+    }
+
     public override ProjectileType GetProjectileType()
     {
         return ProjectileType.Water_Hero_Laser;

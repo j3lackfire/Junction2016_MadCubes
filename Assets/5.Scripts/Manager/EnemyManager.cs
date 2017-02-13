@@ -22,7 +22,15 @@ public class EnemyManager : ObjectManager {
         levelCountDown = GameConstant.increaseSpawnTime;
         summonRate = GameConstant.initialSpawnRate;
         //todo remove later
-        objectList.AddRange(FindObjectsOfType<BaseUnit>());
+        BaseUnit[] allUnits = FindObjectsOfType<BaseUnit>();
+        for (int i =0; i < allUnits.Length; i ++)
+        {
+            if (allUnits[i].isEnemy)
+            {
+                objectList.Add(allUnits[i]);
+            }
+        }
+        //objectList.AddRange(FindObjectsOfType<BaseUnit>());
         for (int i = 0; i < objectList.Count; i ++)
         {
             objectList[i].Init(this, true, 1);
@@ -119,7 +127,7 @@ public class EnemyManager : ObjectManager {
         creep.transform.position = enemySpawnPos[Random.Range(0, enemySpawnPos.Count)].transform.position;
         creep.Init(this, true, currentSpawnLevel);
         objectList.Add(creep);
-        creep.ChargeAtObject(RequestTarget(creep), false);
+        creep.SetObjectTarget(RequestTarget(creep), false);
         creep.transform.parent = transform;
         return creep;
     }
