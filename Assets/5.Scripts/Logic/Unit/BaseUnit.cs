@@ -4,7 +4,7 @@ using System.Collections;
 //Default, base object = enemy
 public class BaseUnit : BaseObject {
     //COMPONENTS
-    protected NavMeshAgent navMeshAgent;
+    protected UnityEngine.AI.NavMeshAgent navMeshAgent;
     
     //private variables
     protected Vector3 targetPosition;
@@ -31,7 +31,7 @@ public class BaseUnit : BaseObject {
         base.PrepareComponent();
         if (navMeshAgent == null)
         {
-            navMeshAgent = GetComponent<NavMeshAgent>();
+            navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         }
         navMeshAgent.speed = objectData.moveSpeed;
 

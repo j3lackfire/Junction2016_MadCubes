@@ -41,7 +41,7 @@ public class ObjectRenderer : MonoBehaviour {
         }
         if (healthBar == null)
         {
-            healthBar = transform.parent.FindChild("HealthCircle").GetComponent<Renderer>();
+            healthBar = transform.parent.Find("HealthCircle").GetComponent<Renderer>();
         }
         SetHealthBarColor(healthBarColor);
 
